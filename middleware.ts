@@ -9,5 +9,6 @@ export default clerkMiddleware(async (auth, req) => {
 })
 
 export const config = {
-  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+  // Exclude static files, _next internals, and /api/v1/* (proxied to backend)
+  matcher: ['/((?!.+\\.[\\w]+$|_next|api/v1).*)', '/'],
 }
