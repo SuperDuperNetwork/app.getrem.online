@@ -46,9 +46,9 @@ function useReveal() {
   return ref
 }
 
-function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function Section({ children, className = '', id }: { children: React.ReactNode; className?: string; id?: string }) {
   const ref = useReveal()
-  return <section ref={ref} className={`reveal ${className}`}>{children}</section>
+  return <section ref={ref} id={id} className={`reveal ${className}`}>{children}</section>
 }
 
 export default function LandingPage() {
