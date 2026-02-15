@@ -1,6 +1,6 @@
 'use client'
 
-import { UserButton } from '@clerk/nextjs'
+import { UserButton, SignedIn } from '@clerk/nextjs'
 import { Bell, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/components/dashboard/sidebar'
@@ -26,7 +26,9 @@ export default function Header() {
         <Button variant="ghost" size="icon">
           <Bell className="h-5 w-5" />
         </Button>
-        <UserButton afterSignOutUrl="/" />
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </div>
     </header>
   )

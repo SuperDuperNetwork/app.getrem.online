@@ -9,6 +9,10 @@ export default clerkMiddleware(async (auth, req) => {
 })
 
 export const config = {
-  // Exclude static files, _next internals, and /api/v1/* (proxied to backend)
-  matcher: ['/((?!.+\\.[\\w]+$|_next|api/v1).*)', '/'],
+  matcher: [
+    // Skip Next.js internals, static files, and /api/v1/* (proxied to backend)
+    '/((?!_next|api/v1|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes (except /api/v1/* which is excluded above)
+    '/(api|trpc)(.*)',
+  ],
 }
