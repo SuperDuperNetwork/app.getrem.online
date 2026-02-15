@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Copy, Check, Book, Code, Zap, Key, Database, Search, ChevronRight } from 'lucide-react'
 
@@ -42,6 +42,27 @@ const SECTIONS = [
 
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState('quickstart')
+
+  useEffect(() => {
+    const sectionIds = SECTIONS.map((s) => s.id)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id)
+          }
+        }
+      },
+      { rootMargin: '-80px 0px -60% 0px', threshold: 0 }
+    )
+
+    for (const id of sectionIds) {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="min-h-screen bg-[#060a14] text-white">

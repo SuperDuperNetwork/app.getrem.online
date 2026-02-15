@@ -88,7 +88,7 @@ export default function BillingPage() {
             <div>
               <div className="text-2xl font-bold capitalize">{currentTier}</div>
               <p className="text-sm text-muted-foreground">
-                {currentTier === 'free' && '$20 free credit on signup'}
+                {currentTier === 'free' && '€20 free credit on signup'}
                 {currentTier === 'pro' && '€29.99/month - 1M vectors, 10M queries'}
                 {currentTier === 'business' && '€99.99/month - 10M vectors, 100M queries'}
               </p>
@@ -114,15 +114,15 @@ export default function BillingPage() {
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-primary" />
-                $20 free credit
+                €20 free credit
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-primary" />
-                $0.10 per 1K vectors
+                €0.10 per 1K vectors
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-primary" />
-                $0.01 per 1K queries
+                €0.01 per 1K queries
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-primary" />

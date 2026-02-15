@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Zap, Globe, Shield, TrendingUp, DollarSign, Lock, Database, CheckCircle2, ChevronRight, Cpu, Network, BarChart3 } from 'lucide-react'
+import { ArrowRight, Zap, Globe, Shield, TrendingUp, DollarSign, Lock, Database, CheckCircle2, ChevronRight, Cpu, Network, BarChart3, Menu, X, Copy, Check } from 'lucide-react'
 
 const ROTATING_WORDS = ['semantic search', 'RAG pipelines', 'AI agents', 'recommendations']
 const WORD_INTERVAL = 2500
@@ -51,7 +51,39 @@ function Section({ children, className = '', id }: { children: React.ReactNode; 
   return <section ref={ref} id={id} className={`reveal ${className}`}>{children}</section>
 }
 
+function HeroCopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <button onClick={handleCopy} className="absolute top-3 right-3 p-1.5 rounded-md bg-white/5 hover:bg-white/10 transition-colors" aria-label="Copy code">
+      {copied ? <Check className="h-3.5 w-3.5 text-green-400" /> : <Copy className="h-3.5 w-3.5 text-zinc-500" />}
+    </button>
+  )
+}
+
+const HERO_CODE = `from rem_sdk import REMClient
+
+# Connect to the decentralized network
+client = REMClient(api_key="rem_xxx")
+
+# Create a collection — auto-distributed across miners
+client.create_collection("products", dimension=384, metric="cosine")
+
+# Upsert vectors with metadata
+client.upsert("products", vectors=[
+  {"id": "p1", "values": [0.1, 0.2, ...], "metadata": {"category": "electronics"}},
+])
+
+# Query — routed to nearest miner for lowest latency
+results = client.query("products", vector=[0.1, ...], top_k=10)`
+
 export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#060a14]">
       {/* Background layers */}
@@ -83,12 +115,35 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex items-center gap-2 rounded-lg bg-white text-black text-sm font-medium px-4 py-2 hover:bg-zinc-200 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-white text-black text-sm font-medium px-4 py-2 hover:bg-zinc-200 transition-colors hidden sm:flex"
             >
               Get Started <ArrowRight className="h-3.5 w-3.5" />
             </Link>
+            <button
+              className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-white/5 px-6 py-4 space-y-3">
+            <Link href="#features" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Features</Link>
+            <Link href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">How It Works</Link>
+            <Link href="#pricing" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Pricing</Link>
+            <Link href="/docs" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Docs</Link>
+            <div className="pt-2 border-t border-white/5 flex flex-col gap-2">
+              <Link href="/sign-in" className="text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Sign In</Link>
+              <Link href="/sign-up" className="inline-flex items-center justify-center gap-2 rounded-lg bg-white text-black text-sm font-medium px-4 py-2.5 hover:bg-zinc-200 transition-colors">
+                Get Started <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}
@@ -129,23 +184,23 @@ export default function LandingPage() {
           {/* Stats row */}
           <div className="animate-fade-up delay-400 mx-auto max-w-3xl">
             <p className="text-xs uppercase tracking-widest text-zinc-500 mb-6">Trusted in production</p>
-            <div className="flex items-center justify-center gap-0">
-              <div className="flex-1 text-center px-6">
+            <div className="grid grid-cols-2 gap-6 md:flex md:items-center md:justify-center md:gap-0">
+              <div className="text-center md:flex-1 md:px-6">
                 <div className="text-3xl md:text-4xl font-bold text-white">2,000+</div>
                 <div className="text-sm text-zinc-500 mt-1">Active miners</div>
               </div>
-              <div className="stat-divider h-12 flex-shrink-0" />
-              <div className="flex-1 text-center px-6">
+              <div className="stat-divider h-12 flex-shrink-0 hidden md:block" />
+              <div className="text-center md:flex-1 md:px-6">
                 <div className="text-3xl md:text-4xl font-bold text-white">50M+</div>
                 <div className="text-sm text-zinc-500 mt-1">Vectors stored</div>
               </div>
-              <div className="stat-divider h-12 flex-shrink-0" />
-              <div className="flex-1 text-center px-6">
+              <div className="stat-divider h-12 flex-shrink-0 hidden md:block" />
+              <div className="text-center md:flex-1 md:px-6">
                 <div className="text-3xl md:text-4xl font-bold text-white">&lt;100ms</div>
                 <div className="text-sm text-zinc-500 mt-1">p95 latency</div>
               </div>
-              <div className="stat-divider h-12 flex-shrink-0" />
-              <div className="flex-1 text-center px-6">
+              <div className="stat-divider h-12 flex-shrink-0 hidden md:block" />
+              <div className="text-center md:flex-1 md:px-6">
                 <div className="text-3xl md:text-4xl font-bold text-white">99.9%</div>
                 <div className="text-sm text-zinc-500 mt-1">Uptime</div>
               </div>
@@ -158,13 +213,14 @@ export default function LandingPage() {
       <Section className="relative z-10 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mx-auto max-w-3xl">
-            <div className="code-window rounded-xl overflow-hidden shadow-2xl shadow-blue-500/5">
+            <div className="code-window rounded-xl overflow-hidden shadow-2xl shadow-blue-500/5 relative">
               <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5">
                 <div className="h-3 w-3 rounded-full bg-white/10" />
                 <div className="h-3 w-3 rounded-full bg-white/10" />
                 <div className="h-3 w-3 rounded-full bg-white/10" />
                 <span className="ml-3 text-xs text-zinc-500">quickstart.py</span>
               </div>
+              <HeroCopyButton text={HERO_CODE} />
               <pre className="p-6 text-[13px] leading-relaxed overflow-x-auto"><code><span className="syn-kw">from</span> <span className="syn-var">rem_sdk</span> <span className="syn-kw">import</span> <span className="syn-cls">REMClient</span>{'\n'}{'\n'}<span className="syn-cmt"># Connect to the decentralized network</span>{'\n'}<span className="syn-var">client</span> <span className="syn-op">=</span> <span className="syn-cls">REMClient</span>(<span className="syn-var">api_key</span><span className="syn-op">=</span><span className="syn-str">&quot;rem_xxx&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Create a collection — auto-distributed across miners</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">create_collection</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">dimension</span><span className="syn-op">=</span><span className="syn-num">384</span>, <span className="syn-var">metric</span><span className="syn-op">=</span><span className="syn-str">&quot;cosine&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Upsert vectors with metadata</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">upsert</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">vectors</span><span className="syn-op">=</span>[{'\n'}{'  '}<span className="syn-op">{'{'}</span><span className="syn-str">&quot;id&quot;</span>: <span className="syn-str">&quot;p1&quot;</span>, <span className="syn-str">&quot;values&quot;</span>: [<span className="syn-num">0.1</span>, <span className="syn-num">0.2</span>, ...], <span className="syn-str">&quot;metadata&quot;</span>: <span className="syn-op">{'{'}</span><span className="syn-str">&quot;category&quot;</span>: <span className="syn-str">&quot;electronics&quot;</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'\n'}]){'\n'}{'\n'}<span className="syn-cmt"># Query — routed to nearest miner for lowest latency</span>{'\n'}<span className="syn-var">results</span> <span className="syn-op">=</span> <span className="syn-var">client</span>.<span className="syn-fn">query</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">vector</span><span className="syn-op">=</span>[<span className="syn-num">0.1</span>, ...], <span className="syn-var">top_k</span><span className="syn-op">=</span><span className="syn-num">10</span>)</code></pre>
             </div>
           </div>
@@ -185,15 +241,15 @@ export default function LandingPage() {
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: Zap, title: 'Sub-100ms Latency', desc: 'Queries routed to the nearest miner. Distributed caching ensures consistent low-latency responses globally.' },
-              { icon: Globe, title: 'Decentralized Network', desc: '2,000+ miners across the globe. No single point of failure. Your data is always available, always redundant.' },
-              { icon: Shield, title: 'Secure by Default', desc: 'End-to-end encryption. Multi-replica storage. Hashed API keys. Your data never touches a centralized server.' },
-              { icon: TrendingUp, title: 'Scale to Billions', desc: 'From 1,000 to 1,000,000,000 vectors. The network grows with you — more miners, more capacity, same latency.' },
-              { icon: DollarSign, title: '10x More Affordable', desc: '$20 free credit on signup. Pay-as-you-go pricing that\'s a fraction of centralized alternatives.' },
-              { icon: Lock, title: 'Enterprise Ready', desc: 'SOC 2 compliant. GDPR ready. SLA guarantees. Dedicated support for business-critical workloads.' },
+              { icon: Zap, title: 'Sub-100ms Latency', desc: 'Queries routed to the nearest miner. Distributed caching ensures consistent low-latency responses globally.', color: 'text-amber-400' },
+              { icon: Globe, title: 'Decentralized Network', desc: '2,000+ miners across the globe. No single point of failure. Your data is always available, always redundant.', color: 'text-blue-400' },
+              { icon: Shield, title: 'Secure by Default', desc: 'End-to-end encryption. Multi-replica storage. Hashed API keys. Your data never touches a centralized server.', color: 'text-green-400' },
+              { icon: TrendingUp, title: 'Scale to Billions', desc: 'From 1,000 to 1,000,000,000 vectors. The network grows with you — more miners, more capacity, same latency.', color: 'text-purple-400' },
+              { icon: DollarSign, title: '10x More Affordable', desc: '€20 free credit on signup. Pay-as-you-go pricing that\'s a fraction of centralized alternatives.', color: 'text-emerald-400' },
+              { icon: Lock, title: 'Enterprise Ready', desc: 'SOC 2 compliant. GDPR ready. SLA guarantees. Dedicated support for business-critical workloads.', color: 'text-rose-400' },
             ].map((f, i) => (
               <div key={i} className="card-feature rounded-xl p-6">
-                <f.icon className="h-10 w-10 text-blue-400 mb-4" />
+                <f.icon className={`h-10 w-10 ${f.color} mb-4`} />
                 <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
                 <p className="text-sm text-zinc-400 leading-relaxed">{f.desc}</p>
               </div>
@@ -214,7 +270,10 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3 max-w-4xl mx-auto">
+          <div className="grid gap-8 md:grid-cols-3 max-w-4xl mx-auto relative">
+            {/* Step connectors (visible on md+) */}
+            <div className="hidden md:block absolute top-7 left-[calc(33.33%+0.5rem)] right-[calc(66.66%-0.5rem)] border-t-2 border-dashed border-white/10" />
+            <div className="hidden md:block absolute top-7 left-[calc(66.66%+0.5rem)] right-[calc(33.33%-0.5rem)] border-t-2 border-dashed border-white/10" />
             {[
               { step: '01', icon: Cpu, title: 'Create a Collection', desc: 'Define your vector dimension and distance metric. Your collection is automatically distributed across miners for redundancy.' },
               { step: '02', icon: Network, title: 'Upsert Vectors', desc: 'Upload embeddings with metadata using our SDK or REST API. Data is replicated across multiple miners in real-time.' },
@@ -251,13 +310,13 @@ export default function LandingPage() {
               <div className="mb-8">
                 <h3 className="text-lg font-semibold mb-1">Free</h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">$0</span>
+                  <span className="text-4xl font-bold">€0</span>
                   <span className="text-zinc-500 text-sm">/month</span>
                 </div>
-                <p className="text-sm text-zinc-500 mt-2">$20 free credit included</p>
+                <p className="text-sm text-zinc-500 mt-2">€20 free credit included</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {['$20 free credit on signup', 'Pay-as-you-go after credit', 'Unlimited collections', '60 requests/min', 'Community support'].map((item, i) => (
+                {['€20 free credit on signup', 'Pay-as-you-go after credit', 'Unlimited collections', '60 requests/min', 'Community support'].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
                     <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
                     {item}
@@ -338,7 +397,7 @@ export default function LandingPage() {
               Start building with REM
             </h2>
             <p className="text-lg text-zinc-400 mb-10 max-w-xl mx-auto">
-              $20 free credit. No credit card required. Deploy your first vector collection in under 60 seconds.
+              €20 free credit. No credit card required. Deploy your first vector collection in under 60 seconds.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

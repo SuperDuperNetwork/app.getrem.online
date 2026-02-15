@@ -5,11 +5,23 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'REM Network - Decentralized Vector Database',
-  description: 'Store and search billions of vectors with sub-100ms latency. The decentralized vector database for AI applications.',
+  description: 'Store and search billions of vectors with sub-100ms latency. The decentralized vector database powered by 2,000+ miners worldwide.',
+  keywords: ['vector database', 'decentralized', 'embeddings', 'semantic search', 'RAG', 'AI infrastructure', 'REM Network'],
+  authors: [{ name: 'REM Network' }],
   openGraph: {
     title: 'REM Network - Decentralized Vector Database',
-    description: 'Store and search billions of vectors with sub-100ms latency.',
+    description: 'Store and search billions of vectors with sub-100ms latency. Powered by 2,000+ miners worldwide.',
     type: 'website',
+    siteName: 'REM Network',
+    url: 'https://app-getrem-online.vercel.app',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'REM Network - Decentralized Vector Database',
+    description: 'Store and search billions of vectors with sub-100ms latency. Powered by 2,000+ miners worldwide.',
+  },
+  icons: {
+    icon: '/favicon.ico',
   },
 }
 
