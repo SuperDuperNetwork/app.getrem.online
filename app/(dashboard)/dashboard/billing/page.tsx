@@ -1,37 +1,51 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Check } from 'lucide-react'
+import { Check, CheckCircle2, XCircle } from 'lucide-react'
 import { useAuthBridge } from '@/lib/auth-context'
-import { apiClient } from '@/lib/api-client'
 
 export default function BillingPage() {
-  const { apiKey, namespace } = useAuthBridge()
-  const [upgrading, setUpgrading] = useState(false)
+  const { namespace } = useAuthBridge()
+  const [upgrading, setUpgrading] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const success = searchParams.get('success')
+  const canceled = searchParams.get('canceled')
 
   const currentTier = namespace?.tier || 'free'
 
   const handleUpgrade = async (tier: string) => {
-    if (!apiKey) return
-
-    setUpgrading(true)
+    setUpgrading(tier)
     try {
-      const result = await apiClient.createCheckoutSession(apiKey, tier)
-      window.location.href = result.checkout_url
+      const res = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to create checkout')
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url
+      }
     } catch (err: any) {
       alert(err.message || 'Failed to create checkout session')
-      setUpgrading(false)
+      setUpgrading(null)
     }
   }
 
   const handleManageBilling = async () => {
-    if (!apiKey) return
-
     try {
-      const result = await apiClient.createPortalSession(apiKey)
-      window.location.href = result.portal_url
+      const res = await fetch('/api/billing/portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to open portal')
+      if (data.portal_url) {
+        window.location.href = data.portal_url
+      }
     } catch (err: any) {
       alert(err.message || 'Failed to open billing portal')
     }
@@ -43,6 +57,26 @@ export default function BillingPage() {
         <h2 className="text-3xl font-bold tracking-tight">Billing</h2>
         <p className="text-muted-foreground">Manage your subscription and billing</p>
       </div>
+
+      {success && (
+        <div className="flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-4">
+          <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-green-300">Payment successful</p>
+            <p className="text-xs text-green-400/70">Your subscription has been activated. It may take a moment to reflect.</p>
+          </div>
+        </div>
+      )}
+
+      {canceled && (
+        <div className="flex items-center gap-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-4">
+          <XCircle className="h-5 w-5 text-yellow-400 flex-shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-yellow-300">Checkout canceled</p>
+            <p className="text-xs text-yellow-400/70">No charges were made. You can try again anytime.</p>
+          </div>
+        </div>
+      )}
 
       {/* Current Plan */}
       <Card>
@@ -133,8 +167,8 @@ export default function BillingPage() {
             {currentTier === 'pro' ? (
               <Button className="w-full" disabled>Current Plan</Button>
             ) : (
-              <Button className="w-full" onClick={() => handleUpgrade('pro')} disabled={upgrading}>
-                {upgrading ? 'Loading...' : currentTier === 'free' ? 'Upgrade to Pro' : 'Change to Pro'}
+              <Button className="w-full" onClick={() => handleUpgrade('pro')} disabled={!!upgrading}>
+                {upgrading === 'pro' ? 'Redirecting to Stripe...' : currentTier === 'free' ? 'Upgrade to Pro' : 'Change to Pro'}
               </Button>
             )}
           </CardContent>
@@ -168,8 +202,8 @@ export default function BillingPage() {
             {currentTier === 'business' ? (
               <Button className="w-full" disabled>Current Plan</Button>
             ) : (
-              <Button className="w-full" onClick={() => handleUpgrade('business')} disabled={upgrading}>
-                {upgrading ? 'Loading...' : 'Upgrade to Business'}
+              <Button className="w-full" onClick={() => handleUpgrade('business')} disabled={!!upgrading}>
+                {upgrading === 'business' ? 'Redirecting to Stripe...' : 'Upgrade to Business'}
               </Button>
             )}
           </CardContent>

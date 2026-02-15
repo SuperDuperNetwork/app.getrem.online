@@ -86,7 +86,7 @@ export default function DashboardPage() {
           <Link href="/dashboard/api-keys">
             <Button variant="outline">Generate API Key</Button>
           </Link>
-          <Link href="https://docs.getrem.online" target="_blank">
+          <Link href="/docs">
             <Button variant="outline">View Documentation</Button>
           </Link>
         </CardContent>

@@ -49,9 +49,39 @@ export default function SettingsPage() {
         <CardContent>
           <UserProfile
             appearance={{
+              baseTheme: undefined,
+              variables: {
+                colorBackground: 'hsl(222 47% 6%)',
+                colorInputBackground: 'hsl(222 47% 8%)',
+                colorText: 'hsl(210 40% 98%)',
+                colorTextSecondary: 'hsl(215 20.2% 55%)',
+                colorPrimary: 'hsl(217.2 91.2% 59.8%)',
+                colorDanger: 'hsl(0 62.8% 30.6%)',
+                colorInputText: 'hsl(210 40% 98%)',
+                colorNeutral: 'hsl(210 40% 98%)',
+                borderRadius: '0.5rem',
+              },
               elements: {
                 rootBox: 'w-full',
-                card: 'shadow-none border-0 w-full',
+                card: 'shadow-none border-0 w-full bg-transparent',
+                navbar: 'bg-transparent border-r border-white/10',
+                navbarButton: 'text-zinc-400 hover:text-white hover:bg-white/5',
+                navbarButtonActive: 'text-white bg-white/10',
+                pageScrollBox: 'bg-transparent',
+                page: 'bg-transparent',
+                profileSection: 'border-white/10',
+                profileSectionTitle: 'border-white/10',
+                profileSectionTitleText: 'text-zinc-300',
+                profileSectionContent: 'bg-transparent',
+                profileSectionPrimaryButton: 'text-blue-400 hover:text-blue-300',
+                formFieldLabel: 'text-zinc-300',
+                formFieldInput: 'bg-white/5 border-white/10 text-white',
+                formButtonPrimary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+                formButtonReset: 'text-zinc-400 hover:text-white',
+                badge: 'bg-white/10 text-zinc-300',
+                avatarBox: 'border-white/10',
+                headerTitle: 'text-white',
+                headerSubtitle: 'text-zinc-400',
               },
             }}
           />

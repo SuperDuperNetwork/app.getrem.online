@@ -96,42 +96,60 @@ export default function CollectionsPage() {
               </div>
             )}
             <div>
-              <label className="text-sm font-medium">Name</label>
+              <label className="text-sm font-medium">Collection Name</label>
               <input
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="my-collection"
+                placeholder="e.g. products, documents, embeddings"
                 className="mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm"
               />
+              <p className="mt-1 text-xs text-muted-foreground">
+                A unique name for your vector collection. Use lowercase letters, numbers, and hyphens.
+              </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium">Dimension</label>
-                <input
-                  type="number"
+                <select
                   value={newDimension}
                   onChange={(e) => setNewDimension(e.target.value)}
-                  placeholder="384"
                   className="mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm"
-                />
+                >
+                  <option value="384">384 — all-MiniLM-L6-v2</option>
+                  <option value="768">768 — all-mpnet-base-v2</option>
+                  <option value="1024">1024 — Cohere embed-v3</option>
+                  <option value="1536">1536 — OpenAI text-embedding-3-small</option>
+                  <option value="3072">3072 — OpenAI text-embedding-3-large</option>
+                </select>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Must match the output dimension of your embedding model. Can&apos;t be changed after creation.
+                </p>
               </div>
               <div>
-                <label className="text-sm font-medium">Metric</label>
+                <label className="text-sm font-medium">Distance Metric</label>
                 <select
                   value={newMetric}
                   onChange={(e) => setNewMetric(e.target.value)}
                   className="mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm"
                 >
-                  <option value="cosine">Cosine</option>
-                  <option value="euclidean">Euclidean</option>
-                  <option value="dot_product">Dot Product</option>
+                  <option value="cosine">Cosine — best for text similarity</option>
+                  <option value="euclidean">Euclidean — best for spatial data</option>
+                  <option value="dot_product">Dot Product — best for normalized vectors</option>
                 </select>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Cosine is recommended for most use cases (RAG, semantic search, recommendations).
+                </p>
               </div>
+            </div>
+            <div className="rounded-md border border-white/10 bg-white/5 p-3">
+              <p className="text-xs text-muted-foreground">
+                Your collection will be replicated across 3 miners for redundancy. Data is encrypted in transit and at rest.
+              </p>
             </div>
             <div className="flex gap-2">
               <Button onClick={handleCreate} disabled={creating || !newName}>
-                {creating ? 'Creating...' : 'Create'}
+                {creating ? 'Creating...' : 'Create Collection'}
               </Button>
               <Button variant="outline" onClick={() => { setShowCreate(false); setError(null); }}>
                 Cancel

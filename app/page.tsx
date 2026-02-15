@@ -74,7 +74,7 @@ export default function LandingPage() {
             <Link href="#features" className="text-sm text-zinc-400 hover:text-white transition-colors">Features</Link>
             <Link href="#how-it-works" className="text-sm text-zinc-400 hover:text-white transition-colors">How It Works</Link>
             <Link href="#pricing" className="text-sm text-zinc-400 hover:text-white transition-colors">Pricing</Link>
-            <Link href="https://docs.getrem.online" target="_blank" className="text-sm text-zinc-400 hover:text-white transition-colors">Docs</Link>
+            <Link href="/docs" className="text-sm text-zinc-400 hover:text-white transition-colors">Docs</Link>
           </div>
 
           <div className="flex items-center gap-3">
@@ -119,8 +119,7 @@ export default function LandingPage() {
               Start Building <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="https://docs.getrem.online"
-              target="_blank"
+              href="/docs"
               className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 text-white font-medium px-7 py-3.5 text-base hover:bg-white/10 transition-colors"
             >
               Documentation <ChevronRight className="h-4 w-4" />
@@ -349,8 +348,7 @@ export default function LandingPage() {
                 Get Started Free <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href="https://docs.getrem.online"
-                target="_blank"
+                href="/docs"
                 className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 text-white font-medium px-8 py-4 text-base hover:bg-white/10 transition-colors"
               >
                 Read the Docs
@@ -380,7 +378,7 @@ export default function LandingPage() {
               <ul className="space-y-2.5 text-sm text-zinc-500">
                 <li><Link href="#features" className="hover:text-white transition-colors">Features</Link></li>
                 <li><Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="https://docs.getrem.online" target="_blank" className="hover:text-white transition-colors">Documentation</Link></li>
+                <li><Link href="/docs" className="hover:text-white transition-colors">Documentation</Link></li>
               </ul>
             </div>
             <div>
