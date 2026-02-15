@@ -1,461 +1,414 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { ArrowRight, Zap, Lock, TrendingUp, DollarSign, Database, Globe, Shield, Sparkles, Code2, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, Zap, Globe, Shield, TrendingUp, DollarSign, Lock, Database, CheckCircle2, ChevronRight, Cpu, Network, BarChart3 } from 'lucide-react'
+
+const ROTATING_WORDS = ['semantic search', 'RAG pipelines', 'AI agents', 'recommendations']
+const WORD_INTERVAL = 2500
+
+function RotatingText() {
+  const [index, setIndex] = useState(0)
+  const [animClass, setAnimClass] = useState('rotate-word-enter')
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setAnimClass('rotate-word-exit')
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % ROTATING_WORDS.length)
+        setAnimClass('rotate-word-enter')
+      }, 400)
+    }, WORD_INTERVAL)
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <span className="inline-block overflow-hidden h-[1.2em] align-bottom">
+      <span className={`inline-block text-gradient-multi ${animClass}`}>
+        {ROTATING_WORDS[index]}
+      </span>
+    </span>
+  )
+}
+
+function useReveal() {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) el.classList.add('visible') },
+      { threshold: 0.15 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return ref
+}
+
+function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useReveal()
+  return <section ref={ref} className={`reveal ${className}`}>{children}</section>
+}
 
 export default function LandingPage() {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden">
-      {/* Animated background */}
-      <div className="fixed inset-0 bg-grid opacity-40" />
-      <div className="fixed inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-cyan-500/10" />
+    <div className="relative min-h-screen overflow-hidden bg-[#060a14]">
+      {/* Background layers */}
+      <div className="fixed inset-0 bg-grid-pattern" />
+      <div className="fixed top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/8 blur-[120px] orb-1" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-purple-600/8 blur-[120px] orb-2" />
+      <div className="fixed top-[40%] right-[20%] w-[300px] h-[300px] rounded-full bg-cyan-600/5 blur-[100px] orb-1" />
 
-      {/* Floating orbs */}
-      <div className="fixed top-20 left-20 h-96 w-96 rounded-full bg-blue-500/20 blur-3xl animate-float" />
-      <div className="fixed bottom-20 right-20 h-96 w-96 rounded-full bg-purple-500/20 blur-3xl animate-float-slow" />
+      {/* Nav */}
+      <nav className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/5">
+        <div className="mx-auto max-w-7xl px-6 flex h-16 items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <Database className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-lg font-semibold tracking-tight">REM</span>
+          </Link>
 
-      {/* Content */}
-      <div className="relative z-10">
-        {/* Header */}
-        <header className="sticky top-0 z-50 w-full glass-strong border-b border-white/10">
-          <div className="container flex h-16 items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Database className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold">REM Network</span>
-            </div>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Features
-              </Link>
-              <Link href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                How It Works
-              </Link>
-              <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Pricing
-              </Link>
-              <Link href="https://docs.getrem.online" target="_blank" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Docs
-              </Link>
-            </nav>
-            <div className="flex items-center gap-3">
-              <Link href="/sign-in">
-                <Button variant="ghost" size="sm">Sign In</Button>
-              </Link>
-              <Link href="/sign-up">
-                <Button size="sm" className="gap-2 glow-blue">
-                  Start Free <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="#features" className="text-sm text-zinc-400 hover:text-white transition-colors">Features</Link>
+            <Link href="#how-it-works" className="text-sm text-zinc-400 hover:text-white transition-colors">How It Works</Link>
+            <Link href="#pricing" className="text-sm text-zinc-400 hover:text-white transition-colors">Pricing</Link>
+            <Link href="https://docs.getrem.online" target="_blank" className="text-sm text-zinc-400 hover:text-white transition-colors">Docs</Link>
           </div>
-        </header>
 
-        {/* Hero Section */}
-        <section className="container flex flex-col items-center justify-center gap-8 py-24 md:py-32 lg:py-40">
-          <div className="flex max-w-[1100px] flex-col items-center gap-6 text-center animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-2 text-sm">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span>Decentralized. Fast. Affordable.</span>
-            </div>
+          <div className="flex items-center gap-3">
+            <Link href="/sign-in" className="text-sm text-zinc-400 hover:text-white transition-colors hidden sm:block">
+              Sign In
+            </Link>
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center gap-2 rounded-lg bg-white text-black text-sm font-medium px-4 py-2 hover:bg-zinc-200 transition-colors"
+            >
+              Get Started <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
+      </nav>
 
-            <h1 className="text-5xl font-bold leading-tight tracking-tighter md:text-6xl lg:text-7xl xl:text-8xl">
-              <span className="text-gradient-hero">Vector Database</span>
-              <br />
-              for the AI Era
-            </h1>
-
-            <p className="max-w-[800px] text-lg text-muted-foreground md:text-xl lg:text-2xl">
-              Store and search billions of vectors with <span className="text-primary font-semibold">sub-100ms latency</span>.
-              Built on a decentralized network of miners for maximum reliability and performance.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 mt-4">
-              <Link href="/sign-up">
-                <Button size="lg" className="gap-2 text-base px-8 py-6 glow-blue">
-                  Start Building Free <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="https://docs.getrem.online" target="_blank">
-                <Button size="lg" variant="outline" className="gap-2 text-base px-8 py-6 glass">
-                  <Code2 className="h-5 w-5" /> View Documentation
-                </Button>
-              </Link>
-            </div>
-
-            <div className="flex items-center gap-8 mt-8 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span>$20 free credit</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span>No credit card required</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span>Deploy in 60 seconds</span>
-              </div>
+      {/* Hero */}
+      <div className="relative z-10 pt-32 pb-20 md:pt-44 md:pb-28">
+        <div className="mx-auto max-w-7xl px-6 text-center">
+          <div className="animate-fade-up">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-zinc-400 mb-8">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+              2,000+ miners online
             </div>
           </div>
 
-          {/* Code Example */}
-          <div className="w-full max-w-[900px] mt-12 animate-fade-in-up" style={{animationDelay: '200ms'}}>
-            <div className="glass-strong rounded-xl overflow-hidden border border-white/10 glow-purple">
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
-                <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                <span className="ml-2 text-xs text-muted-foreground">quickstart.py</span>
+          <h1 className="animate-fade-up delay-100 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
+            Performance at scale for<br />
+            <RotatingText />
+          </h1>
+
+          <p className="animate-fade-up delay-200 mx-auto max-w-2xl text-lg md:text-xl text-zinc-400 leading-relaxed mb-10">
+            The decentralized vector database delivering relevant results at any scale.
+            Powered by a global network of miners — not a single cloud provider.
+          </p>
+
+          <div className="animate-fade-up delay-300 flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center gap-2 rounded-lg bg-white text-black font-medium px-7 py-3.5 text-base hover:bg-zinc-200 transition-colors"
+            >
+              Start Building <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="https://docs.getrem.online"
+              target="_blank"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 text-white font-medium px-7 py-3.5 text-base hover:bg-white/10 transition-colors"
+            >
+              Documentation <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          {/* Stats row */}
+          <div className="animate-fade-up delay-400 mx-auto max-w-3xl">
+            <p className="text-xs uppercase tracking-widest text-zinc-500 mb-6">Trusted in production</p>
+            <div className="flex items-center justify-center gap-0">
+              <div className="flex-1 text-center px-6">
+                <div className="text-3xl md:text-4xl font-bold text-white">2,000+</div>
+                <div className="text-sm text-zinc-500 mt-1">Active miners</div>
               </div>
-              <pre className="p-6 text-sm overflow-x-auto">
-                <code>
-                  <span className="syn-keyword">from</span> <span className="syn-var">rem_sdk</span> <span className="syn-keyword">import</span> <span className="syn-func">REMClient</span>{'\n\n'}
-                  <span className="syn-comment"># Initialize client</span>{'\n'}
-                  <span className="syn-var">client</span> <span className="syn-op">=</span> <span className="syn-func">REMClient</span>(<span className="syn-var">api_key</span><span className="syn-op">=</span><span className="syn-string">"rem_xxx"</span>){'\n\n'}
-                  <span className="syn-comment"># Create collection</span>{'\n'}
-                  <span className="syn-var">client</span>.<span className="syn-func">create_collection</span>(<span className="syn-string">"my-vectors"</span>, <span className="syn-var">dimension</span><span className="syn-op">=</span><span className="syn-num">384</span>){'\n\n'}
-                  <span className="syn-comment"># Upsert vectors</span>{'\n'}
-                  <span className="syn-var">client</span>.<span className="syn-func">upsert</span>(<span className="syn-string">"my-vectors"</span>, <span className="syn-var">vectors</span><span className="syn-op">=</span>[{'\n'}
-                  {'  '}{'{'}
-                  <span className="syn-string">"id"</span>: <span className="syn-string">"vec1"</span>, {'\n'}
-                  {'    '}<span className="syn-string">"values"</span>: [<span className="syn-num">0.1</span>, <span className="syn-num">0.2</span>, ...], {'\n'}
-                  {'    '}<span className="syn-string">"metadata"</span>: {'{'}<span className="syn-string">"text"</span>: <span className="syn-string">"hello world"</span>{'}'}{'\n'}
-                  {'  '}{'}'}{'\n'}
-                  ]){'\n\n'}
-                  <span className="syn-comment"># Query similar vectors</span>{'\n'}
-                  <span className="syn-var">results</span> <span className="syn-op">=</span> <span className="syn-var">client</span>.<span className="syn-func">query</span>(<span className="syn-string">"my-vectors"</span>, <span className="syn-var">vector</span><span className="syn-op">=</span>[...], <span className="syn-var">top_k</span><span className="syn-op">=</span><span className="syn-num">10</span>)
-                </code>
-              </pre>
+              <div className="stat-divider h-12 flex-shrink-0" />
+              <div className="flex-1 text-center px-6">
+                <div className="text-3xl md:text-4xl font-bold text-white">50M+</div>
+                <div className="text-sm text-zinc-500 mt-1">Vectors stored</div>
+              </div>
+              <div className="stat-divider h-12 flex-shrink-0" />
+              <div className="flex-1 text-center px-6">
+                <div className="text-3xl md:text-4xl font-bold text-white">&lt;100ms</div>
+                <div className="text-sm text-zinc-500 mt-1">p95 latency</div>
+              </div>
+              <div className="stat-divider h-12 flex-shrink-0" />
+              <div className="flex-1 text-center px-6">
+                <div className="text-3xl md:text-4xl font-bold text-white">99.9%</div>
+                <div className="text-sm text-zinc-500 mt-1">Uptime</div>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
 
-        {/* Stats Section */}
-        <section className="container py-16 animate-fade-in-up" style={{animationDelay: '400ms'}}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-gradient">2000+</div>
-              <div className="text-sm text-muted-foreground mt-2">Active Miners</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-gradient">50M+</div>
-              <div className="text-sm text-muted-foreground mt-2">Vectors Stored</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-gradient">&lt;100ms</div>
-              <div className="text-sm text-muted-foreground mt-2">Query Latency</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-gradient">99.9%</div>
-              <div className="text-sm text-muted-foreground mt-2">Uptime SLA</div>
+      {/* Code example */}
+      <Section className="relative z-10 py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-3xl">
+            <div className="code-window rounded-xl overflow-hidden shadow-2xl shadow-blue-500/5">
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5">
+                <div className="h-3 w-3 rounded-full bg-white/10" />
+                <div className="h-3 w-3 rounded-full bg-white/10" />
+                <div className="h-3 w-3 rounded-full bg-white/10" />
+                <span className="ml-3 text-xs text-zinc-500">quickstart.py</span>
+              </div>
+              <pre className="p-6 text-[13px] leading-relaxed overflow-x-auto"><code><span className="syn-kw">from</span> <span className="syn-var">rem_sdk</span> <span className="syn-kw">import</span> <span className="syn-cls">REMClient</span>{'\n'}{'\n'}<span className="syn-cmt"># Connect to the decentralized network</span>{'\n'}<span className="syn-var">client</span> <span className="syn-op">=</span> <span className="syn-cls">REMClient</span>(<span className="syn-var">api_key</span><span className="syn-op">=</span><span className="syn-str">&quot;rem_xxx&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Create a collection — auto-distributed across miners</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">create_collection</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">dimension</span><span className="syn-op">=</span><span className="syn-num">384</span>, <span className="syn-var">metric</span><span className="syn-op">=</span><span className="syn-str">&quot;cosine&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Upsert vectors with metadata</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">upsert</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">vectors</span><span className="syn-op">=</span>[{'\n'}{'  '}<span className="syn-op">{'{'}</span><span className="syn-str">&quot;id&quot;</span>: <span className="syn-str">&quot;p1&quot;</span>, <span className="syn-str">&quot;values&quot;</span>: [<span className="syn-num">0.1</span>, <span className="syn-num">0.2</span>, ...], <span className="syn-str">&quot;metadata&quot;</span>: <span className="syn-op">{'{'}</span><span className="syn-str">&quot;category&quot;</span>: <span className="syn-str">&quot;electronics&quot;</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'\n'}]){'\n'}{'\n'}<span className="syn-cmt"># Query — routed to nearest miner for lowest latency</span>{'\n'}<span className="syn-var">results</span> <span className="syn-op">=</span> <span className="syn-var">client</span>.<span className="syn-fn">query</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">vector</span><span className="syn-op">=</span>[<span className="syn-num">0.1</span>, ...], <span className="syn-var">top_k</span><span className="syn-op">=</span><span className="syn-num">10</span>)</code></pre>
             </div>
           </div>
-        </section>
+        </div>
+      </Section>
 
-        {/* Features Section */}
-        <section id="features" className="container py-24">
-          <div className="flex flex-col items-center gap-4 text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              Built for <span className="text-gradient">Performance</span>
+      {/* Features */}
+      <Section id="features" className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              Why teams choose <span className="text-gradient-blue">REM</span>
             </h2>
-            <p className="max-w-[700px] text-lg text-muted-foreground">
-              Everything you need to build production-ready AI applications with vector search.
+            <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+              Purpose-built for AI workloads. Decentralized by design.
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div className="gradient-border p-6 rounded-xl glass">
-              <Zap className="h-12 w-12 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Lightning Fast</h3>
-              <p className="text-muted-foreground">
-                Sub-100ms query latency with distributed caching, optimized routing, and edge deployment.
-              </p>
-            </div>
-
-            <div className="gradient-border p-6 rounded-xl glass">
-              <Globe className="h-12 w-12 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Decentralized</h3>
-              <p className="text-muted-foreground">
-                Powered by 2000+ miners worldwide. No single point of failure. Maximum reliability.
-              </p>
-            </div>
-
-            <div className="gradient-border p-6 rounded-xl glass">
-              <Shield className="h-12 w-12 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Secure by Design</h3>
-              <p className="text-muted-foreground">
-                End-to-end encryption with multi-replica redundancy. Your data is always safe.
-              </p>
-            </div>
-
-            <div className="gradient-border p-6 rounded-xl glass">
-              <TrendingUp className="h-12 w-12 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Infinitely Scalable</h3>
-              <p className="text-muted-foreground">
-                From prototype to production. Scale from thousands to billions of vectors seamlessly.
-              </p>
-            </div>
-
-            <div className="gradient-border p-6 rounded-xl glass">
-              <DollarSign className="h-12 w-12 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Cost Effective</h3>
-              <p className="text-muted-foreground">
-                $20 free credit on signup. Pay only for what you use. No hidden fees or surprises.
-              </p>
-            </div>
-
-            <div className="gradient-border p-6 rounded-xl glass">
-              <Lock className="h-12 w-12 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Enterprise Ready</h3>
-              <p className="text-muted-foreground">
-                SOC 2 compliant. GDPR ready. Dedicated support. SLA guarantees for peace of mind.
-              </p>
-            </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { icon: Zap, title: 'Sub-100ms Latency', desc: 'Queries routed to the nearest miner. Distributed caching ensures consistent low-latency responses globally.' },
+              { icon: Globe, title: 'Decentralized Network', desc: '2,000+ miners across the globe. No single point of failure. Your data is always available, always redundant.' },
+              { icon: Shield, title: 'Secure by Default', desc: 'End-to-end encryption. Multi-replica storage. Hashed API keys. Your data never touches a centralized server.' },
+              { icon: TrendingUp, title: 'Scale to Billions', desc: 'From 1,000 to 1,000,000,000 vectors. The network grows with you — more miners, more capacity, same latency.' },
+              { icon: DollarSign, title: '10x More Affordable', desc: '$20 free credit on signup. Pay-as-you-go pricing that\'s a fraction of centralized alternatives.' },
+              { icon: Lock, title: 'Enterprise Ready', desc: 'SOC 2 compliant. GDPR ready. SLA guarantees. Dedicated support for business-critical workloads.' },
+            ].map((f, i) => (
+              <div key={i} className="card-feature rounded-xl p-6">
+                <f.icon className="h-10 w-10 text-blue-400 mb-4" />
+                <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </Section>
 
-        {/* How It Works Section */}
-        <section id="how-it-works" className="container py-24">
-          <div className="flex flex-col items-center gap-4 text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              How <span className="text-gradient">It Works</span>
+      {/* How it works */}
+      <Section id="how-it-works" className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              From zero to production in <span className="text-gradient-green">minutes</span>
             </h2>
-            <p className="max-w-[700px] text-lg text-muted-foreground">
-              Get started in minutes. Deploy to production in hours.
+            <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+              Three steps. No infrastructure to manage. No servers to provision.
             </p>
           </div>
 
-          <div className="grid gap-12 md:grid-cols-3">
-            <div className="flex flex-col items-center text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary text-2xl font-bold mb-4">
-                1
+          <div className="grid gap-8 md:grid-cols-3 max-w-4xl mx-auto">
+            {[
+              { step: '01', icon: Cpu, title: 'Create a Collection', desc: 'Define your vector dimension and distance metric. Your collection is automatically distributed across miners for redundancy.' },
+              { step: '02', icon: Network, title: 'Upsert Vectors', desc: 'Upload embeddings with metadata using our SDK or REST API. Data is replicated across multiple miners in real-time.' },
+              { step: '03', icon: BarChart3, title: 'Query at Scale', desc: 'Search for similar vectors with sub-100ms latency. Queries are routed to the optimal miner automatically.' },
+            ].map((s, i) => (
+              <div key={i} className="text-center">
+                <div className="inline-flex items-center justify-center h-14 w-14 rounded-full border border-white/10 bg-white/5 mb-5">
+                  <s.icon className="h-6 w-6 text-blue-400" />
+                </div>
+                <div className="text-xs font-mono text-zinc-500 mb-2">STEP {s.step}</div>
+                <h3 className="text-lg font-semibold mb-2">{s.title}</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed">{s.desc}</p>
               </div>
-              <h3 className="text-xl font-bold mb-2">Create Collection</h3>
-              <p className="text-muted-foreground">
-                Define your vector dimension and distance metric. Collections are automatically distributed across miners.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary text-2xl font-bold mb-4">
-                2
-              </div>
-              <h3 className="text-xl font-bold mb-2">Upsert Vectors</h3>
-              <p className="text-muted-foreground">
-                Upload your embeddings with metadata. Vectors are replicated across multiple miners for redundancy.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary text-2xl font-bold mb-4">
-                3
-              </div>
-              <h3 className="text-xl font-bold mb-2">Query & Scale</h3>
-              <p className="text-muted-foreground">
-                Search for similar vectors with sub-100ms latency. Scale to billions of vectors effortlessly.
-              </p>
-            </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </Section>
 
-        {/* Pricing Section */}
-        <section id="pricing" className="container py-24">
-          <div className="flex flex-col items-center gap-4 text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              Simple, <span className="text-gradient">Transparent Pricing</span>
+      {/* Pricing */}
+      <Section id="pricing" className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              Simple, transparent pricing
             </h2>
-            <p className="max-w-[700px] text-lg text-muted-foreground">
-              Start free, upgrade as you grow. No hidden fees.
+            <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+              Start free. Scale without surprises.
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3 max-w-[1100px] mx-auto">
-            {/* Free Tier */}
-            <div className="gradient-border p-8 rounded-xl glass flex flex-col">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">Free</h3>
+          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+            {/* Free */}
+            <div className="card-pricing rounded-xl p-8 flex flex-col">
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-1">Free</h3>
                 <div className="flex items-baseline gap-1">
                   <span className="text-4xl font-bold">$0</span>
-                  <span className="text-muted-foreground">/month</span>
+                  <span className="text-zinc-500 text-sm">/month</span>
                 </div>
+                <p className="text-sm text-zinc-500 mt-2">$20 free credit included</p>
               </div>
-              <ul className="flex flex-col gap-3 mb-8 flex-1">
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>$20 free credit on signup</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>$0.10 per 1K vectors/month</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>$0.01 per 1K queries</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Unlimited collections</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Community support</span>
-                </li>
+              <ul className="space-y-3 mb-8 flex-1">
+                {['$20 free credit on signup', 'Pay-as-you-go after credit', 'Unlimited collections', '60 requests/min', 'Community support'].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
+                    <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
               </ul>
-              <Link href="/sign-up" className="w-full">
-                <Button className="w-full">Get Started</Button>
+              <Link
+                href="/sign-up"
+                className="block text-center rounded-lg border border-white/10 bg-white/5 text-white font-medium py-3 text-sm hover:bg-white/10 transition-colors"
+              >
+                Get Started
               </Link>
             </div>
 
-            {/* Pro Tier */}
-            <div className="gradient-border p-8 rounded-xl glass flex flex-col relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
-                POPULAR
+            {/* Pro */}
+            <div className="card-pricing card-pricing-featured rounded-xl p-8 flex flex-col relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-semibold px-4 py-1 rounded-full">
+                Most Popular
               </div>
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">Pro</h3>
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-1">Pro</h3>
                 <div className="flex items-baseline gap-1">
                   <span className="text-4xl font-bold">€29.99</span>
-                  <span className="text-muted-foreground">/month</span>
+                  <span className="text-zinc-500 text-sm">/month</span>
                 </div>
+                <p className="text-sm text-zinc-500 mt-2">For growing applications</p>
               </div>
-              <ul className="flex flex-col gap-3 mb-8 flex-1">
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>1M vectors included</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>10M queries included</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Priority support</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Advanced analytics</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>99.9% uptime SLA</span>
-                </li>
+              <ul className="space-y-3 mb-8 flex-1">
+                {['1M vectors included', '10M queries included', '600 requests/min', 'Priority support', '99.9% uptime SLA'].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
+                    <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
               </ul>
-              <Link href="/sign-up" className="w-full">
-                <Button className="w-full glow-blue">Upgrade to Pro</Button>
+              <Link
+                href="/sign-up"
+                className="block text-center rounded-lg bg-white text-black font-medium py-3 text-sm hover:bg-zinc-200 transition-colors"
+              >
+                Upgrade to Pro
               </Link>
             </div>
 
-            {/* Business Tier */}
-            <div className="gradient-border p-8 rounded-xl glass flex flex-col">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">Business</h3>
+            {/* Business */}
+            <div className="card-pricing rounded-xl p-8 flex flex-col">
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-1">Business</h3>
                 <div className="flex items-baseline gap-1">
                   <span className="text-4xl font-bold">€99.99</span>
-                  <span className="text-muted-foreground">/month</span>
+                  <span className="text-zinc-500 text-sm">/month</span>
                 </div>
+                <p className="text-sm text-zinc-500 mt-2">For production workloads</p>
               </div>
-              <ul className="flex flex-col gap-3 mb-8 flex-1">
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>10M vectors included</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>100M queries included</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Dedicated support</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Custom integrations</span>
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>99.99% uptime SLA</span>
-                </li>
+              <ul className="space-y-3 mb-8 flex-1">
+                {['10M vectors included', '100M queries included', '6,000 requests/min', 'Dedicated support', '99.99% uptime SLA'].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
+                    <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
               </ul>
-              <Link href="/sign-up" className="w-full">
-                <Button className="w-full">Upgrade to Business</Button>
+              <Link
+                href="/sign-up"
+                className="block text-center rounded-lg border border-white/10 bg-white/5 text-white font-medium py-3 text-sm hover:bg-white/10 transition-colors"
+              >
+                Upgrade to Business
               </Link>
             </div>
           </div>
-        </section>
+        </div>
+      </Section>
 
-        {/* CTA Section */}
-        <section className="container py-24">
-          <div className="glass-strong rounded-2xl p-12 md:p-16 text-center glow-purple">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Ready to <span className="text-gradient">Build</span>?
+      {/* CTA */}
+      <Section className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              Start building with REM
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-[600px] mx-auto">
-              Join thousands of developers building the next generation of AI applications with REM Network.
+            <p className="text-lg text-zinc-400 mb-10 max-w-xl mx-auto">
+              $20 free credit. No credit card required. Deploy your first vector collection in under 60 seconds.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/sign-up">
-                <Button size="lg" className="gap-2 text-base px-8 py-6 glow-blue">
-                  Start Building Free <ArrowRight className="h-5 w-5" />
-                </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/sign-up"
+                className="inline-flex items-center gap-2 rounded-lg bg-white text-black font-medium px-8 py-4 text-base hover:bg-zinc-200 transition-colors"
+              >
+                Get Started Free <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="https://docs.getrem.online" target="_blank">
-                <Button size="lg" variant="outline" className="gap-2 text-base px-8 py-6 glass">
-                  Read Documentation
-                </Button>
+              <Link
+                href="https://docs.getrem.online"
+                target="_blank"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 text-white font-medium px-8 py-4 text-base hover:bg-white/10 transition-colors"
+              >
+                Read the Docs
               </Link>
             </div>
           </div>
-        </section>
+        </div>
+      </Section>
 
-        {/* Footer */}
-        <footer className="border-t border-white/10 py-12">
-          <div className="container">
-            <div className="grid gap-8 md:grid-cols-4">
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Database className="h-5 w-5 text-primary" />
-                  <span className="font-bold">REM Network</span>
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-white/5 py-12">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid gap-8 md:grid-cols-4">
+            <div>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="h-7 w-7 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <Database className="h-3.5 w-3.5 text-white" />
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  The decentralized vector database for the AI era.
-                </p>
+                <span className="font-semibold">REM Network</span>
               </div>
-              <div>
-                <h4 className="font-semibold mb-4">Product</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><Link href="#features" className="hover:text-foreground transition-colors">Features</Link></li>
-                  <li><Link href="#pricing" className="hover:text-foreground transition-colors">Pricing</Link></li>
-                  <li><Link href="https://docs.getrem.online" target="_blank" className="hover:text-foreground transition-colors">Documentation</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-4">Company</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><Link href="https://getrem.online" target="_blank" className="hover:text-foreground transition-colors">About</Link></li>
-                  <li><Link href="https://getrem.online/explorer" target="_blank" className="hover:text-foreground transition-colors">Explorer</Link></li>
-                  <li><Link href="https://github.com/rem-network" target="_blank" className="hover:text-foreground transition-colors">GitHub</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-4">Community</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><Link href="https://discord.gg/rem" target="_blank" className="hover:text-foreground transition-colors">Discord</Link></li>
-                  <li><Link href="https://twitter.com/rem_network" target="_blank" className="hover:text-foreground transition-colors">Twitter</Link></li>
-                  <li><Link href="https://t.me/rem_network" target="_blank" className="hover:text-foreground transition-colors">Telegram</Link></li>
-                </ul>
-              </div>
-            </div>
-            <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className="text-sm text-muted-foreground">
-                © 2026 REM Network. All rights reserved.
+              <p className="text-sm text-zinc-500 leading-relaxed">
+                The decentralized vector database for the AI era.
               </p>
-              <div className="flex gap-6 text-sm text-muted-foreground">
-                <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-                <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
-              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold mb-4">Product</h4>
+              <ul className="space-y-2.5 text-sm text-zinc-500">
+                <li><Link href="#features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="https://docs.getrem.online" target="_blank" className="hover:text-white transition-colors">Documentation</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold mb-4">Company</h4>
+              <ul className="space-y-2.5 text-sm text-zinc-500">
+                <li><Link href="https://getrem.online" target="_blank" className="hover:text-white transition-colors">About</Link></li>
+                <li><Link href="https://getrem.online/explorer" target="_blank" className="hover:text-white transition-colors">Network Explorer</Link></li>
+                <li><Link href="https://github.com/rem-network" target="_blank" className="hover:text-white transition-colors">GitHub</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold mb-4">Community</h4>
+              <ul className="space-y-2.5 text-sm text-zinc-500">
+                <li><Link href="https://discord.gg/rem" target="_blank" className="hover:text-white transition-colors">Discord</Link></li>
+                <li><Link href="https://twitter.com/rem_network" target="_blank" className="hover:text-white transition-colors">Twitter</Link></li>
+                <li><Link href="https://t.me/rem_network" target="_blank" className="hover:text-white transition-colors">Telegram</Link></li>
+              </ul>
             </div>
           </div>
-        </footer>
-      </div>
+          <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-zinc-600">© 2026 REM Network. All rights reserved.</p>
+            <div className="flex gap-6 text-sm text-zinc-600">
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
