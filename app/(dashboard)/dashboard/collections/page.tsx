@@ -172,7 +172,7 @@ export default function CollectionsPage() {
               </tr>
             </thead>
             <tbody>
-              {collections.map((col) => (
+              {collections.map((col: any) => (
                 <tr key={col.id} className="border-b">
                   <td className="px-4 py-3 text-sm font-medium">{col.name}</td>
                   <td className="px-4 py-3 text-sm">{col.dimension}</td>

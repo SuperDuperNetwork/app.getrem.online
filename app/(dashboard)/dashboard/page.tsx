@@ -18,7 +18,7 @@ export default function DashboardPage() {
   const isLoading = authLoading || collectionsLoading || creditLoading || usageLoading
 
   // Calculate total vectors across all collections
-  const totalVectors = collections.reduce((sum, col) => sum + (col.vector_count || 0), 0)
+  const totalVectors = collections.reduce((sum: number, col: any) => sum + (col.vector_count || 0), 0)
 
   // Format credit balance
   const creditBalanceFormatted = creditBalance?.balance

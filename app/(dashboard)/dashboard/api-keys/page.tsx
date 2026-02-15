@@ -182,7 +182,7 @@ export default function APIKeysPage() {
               </tr>
             </thead>
             <tbody>
-              {apiKeys.map((key) => (
+              {apiKeys.map((key: any) => (
                 <tr key={key.id} className="border-b">
                   <td className="px-4 py-3 text-sm font-medium">{key.name}</td>
                   <td className="px-4 py-3 text-sm">
