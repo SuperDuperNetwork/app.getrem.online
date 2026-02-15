@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['img.clerk.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+      },
+    ],
   },
   // Proxy API calls to the coordinator backend to avoid CORS issues.
   // Browser calls app.getrem.online/api/v1/* → rewritten to getrem.online/v1/*

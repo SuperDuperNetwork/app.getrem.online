@@ -190,6 +190,7 @@ export default function CollectionsPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDelete(col.id)}
+                        aria-label="Delete collection"
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
