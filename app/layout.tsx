@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     description: 'Store and search billions of vectors with sub-100ms latency. Powered by 2,000+ miners worldwide.',
     type: 'website',
     siteName: 'REM Network',
-    url: 'https://app-getrem-online.vercel.app',
+    url: 'https://app.getrem.online',
   },
   twitter: {
     card: 'summary_large_image',
@@ -31,7 +31,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      signInFallbackRedirectUrl="/dashboard"
+      signUpFallbackRedirectUrl="/dashboard"
+    >
       <html lang="en" suppressHydrationWarning>
         <body className="min-h-screen antialiased">
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>

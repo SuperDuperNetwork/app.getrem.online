@@ -12,7 +12,7 @@ const nextConfig = {
   // Proxy API calls to the coordinator backend to avoid CORS issues.
   // Browser calls app.getrem.online/api/v1/* → rewritten to getrem.online/v1/*
   async rewrites() {
-    const backendUrl = process.env.BACKEND_URL || 'https://getrem.online'
+    const backendUrl = process.env.BACKEND_URL || 'https://api.getrem.online'
     return [
       {
         source: '/api/v1/:path*',

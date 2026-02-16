@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   // Forward to coordinator backend for user provisioning
   if (eventType === 'user.created' || eventType === 'user.updated' || eventType === 'user.deleted') {
     try {
-      const backendUrl = process.env.BACKEND_URL || 'https://getrem.online'
+      const backendUrl = process.env.BACKEND_URL || 'https://api.getrem.online'
       await fetch(`${backendUrl}/v1/auth/clerk-webhook`, {
         method: 'POST',
         headers: {

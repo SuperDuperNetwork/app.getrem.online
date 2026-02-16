@@ -6,7 +6,7 @@ class REMAPIClient {
     // On server: use direct backend URL
     this.baseUrl = typeof window !== 'undefined'
       ? '/api/v1'
-      : `${process.env.BACKEND_URL || 'https://getrem.online'}/v1`
+      : `${process.env.BACKEND_URL || 'https://api.getrem.online'}/v1`
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {

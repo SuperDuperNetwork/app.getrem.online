@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
   // Forward to coordinator backend for subscription management
   try {
-    const backendUrl = process.env.BACKEND_URL || 'https://getrem.online'
+    const backendUrl = process.env.BACKEND_URL || 'https://api.getrem.online'
     await fetch(`${backendUrl}/v1/billing/stripe-webhook`, {
       method: 'POST',
       headers: {
