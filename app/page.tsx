@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Zap, Globe, Shield, TrendingUp, DollarSign, Lock, Database, CheckCircle2, ChevronRight, Cpu, Network, BarChart3, Menu, X, Copy, Check } from 'lucide-react'
+import { ArrowRight, Zap, Globe, Shield, TrendingUp, DollarSign, Lock, Database, CheckCircle2, ChevronRight, Cpu, Network, BarChart3, Menu, X, Copy, Check, Search, Filter } from 'lucide-react'
 
 const ROTATING_WORDS = ['semantic search', 'RAG pipelines', 'AI agents', 'recommendations']
 const WORD_INTERVAL = 2500
@@ -67,19 +67,24 @@ function HeroCopyButton({ text }: { text: string }) {
 
 const HERO_CODE = `from rem_sdk import REMClient
 
-# Connect to the decentralized network
 client = REMClient(api_key="rem_xxx")
 
-# Create a collection — auto-distributed across miners
-client.create_collection("products", dimension=384, metric="cosine")
+# Create collection with AES-256-GCM encrypted fields
+client.create_collection("products", dimension=384,
+    encrypted_fields=["email", "pii_data"])
 
-# Upsert vectors with metadata
+# Upsert vectors with metadata (encrypted fields auto-handled)
 client.upsert("products", vectors=[
-  {"id": "p1", "values": [0.1, 0.2, ...], "metadata": {"category": "electronics"}},
+  {"id": "p1", "values": embed("..."), "metadata": {
+      "category": "electronics", "price": 299.99}},
 ])
 
-# Query — routed to nearest miner for lowest latency
-results = client.query("products", vector=[0.1, ...], top_k=10)`
+# Hybrid search: vector similarity + keyword matching + filters
+results = client.query("products",
+    vector=embed("wireless headphones"),
+    query_text="noise cancelling",    # BM25 keyword boost
+    filter={"price": {"$lte": 500}},  # metadata filtering
+    top_k=10)`
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -221,7 +226,7 @@ export default function LandingPage() {
                 <span className="ml-3 text-xs text-zinc-500">quickstart.py</span>
               </div>
               <HeroCopyButton text={HERO_CODE} />
-              <pre className="p-6 text-[13px] leading-relaxed overflow-x-auto"><code><span className="syn-kw">from</span> <span className="syn-var">rem_sdk</span> <span className="syn-kw">import</span> <span className="syn-cls">REMClient</span>{'\n'}{'\n'}<span className="syn-cmt"># Connect to the decentralized network</span>{'\n'}<span className="syn-var">client</span> <span className="syn-op">=</span> <span className="syn-cls">REMClient</span>(<span className="syn-var">api_key</span><span className="syn-op">=</span><span className="syn-str">&quot;rem_xxx&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Create a collection — auto-distributed across miners</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">create_collection</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">dimension</span><span className="syn-op">=</span><span className="syn-num">384</span>, <span className="syn-var">metric</span><span className="syn-op">=</span><span className="syn-str">&quot;cosine&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Upsert vectors with metadata</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">upsert</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">vectors</span><span className="syn-op">=</span>[{'\n'}{'  '}<span className="syn-op">{'{'}</span><span className="syn-str">&quot;id&quot;</span>: <span className="syn-str">&quot;p1&quot;</span>, <span className="syn-str">&quot;values&quot;</span>: [<span className="syn-num">0.1</span>, <span className="syn-num">0.2</span>, ...], <span className="syn-str">&quot;metadata&quot;</span>: <span className="syn-op">{'{'}</span><span className="syn-str">&quot;category&quot;</span>: <span className="syn-str">&quot;electronics&quot;</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'\n'}]){'\n'}{'\n'}<span className="syn-cmt"># Query — routed to nearest miner for lowest latency</span>{'\n'}<span className="syn-var">results</span> <span className="syn-op">=</span> <span className="syn-var">client</span>.<span className="syn-fn">query</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">vector</span><span className="syn-op">=</span>[<span className="syn-num">0.1</span>, ...], <span className="syn-var">top_k</span><span className="syn-op">=</span><span className="syn-num">10</span>)</code></pre>
+              <pre className="p-6 text-[13px] leading-relaxed overflow-x-auto"><code><span className="syn-kw">from</span> <span className="syn-var">rem_sdk</span> <span className="syn-kw">import</span> <span className="syn-cls">REMClient</span>{'\n'}{'\n'}<span className="syn-var">client</span> <span className="syn-op">=</span> <span className="syn-cls">REMClient</span>(<span className="syn-var">api_key</span><span className="syn-op">=</span><span className="syn-str">&quot;rem_xxx&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Create collection with AES-256-GCM encrypted fields</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">create_collection</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">dimension</span><span className="syn-op">=</span><span className="syn-num">384</span>,{'\n'}{'    '}<span className="syn-var">encrypted_fields</span><span className="syn-op">=</span>[<span className="syn-str">&quot;email&quot;</span>, <span className="syn-str">&quot;pii_data&quot;</span>]){'\n'}{'\n'}<span className="syn-cmt"># Upsert vectors with metadata (encrypted fields auto-handled)</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">upsert</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">vectors</span><span className="syn-op">=</span>[{'\n'}{'  '}<span className="syn-op">{'{'}</span><span className="syn-str">&quot;id&quot;</span>: <span className="syn-str">&quot;p1&quot;</span>, <span className="syn-str">&quot;values&quot;</span>: <span className="syn-fn">embed</span>(<span className="syn-str">&quot;...&quot;</span>), <span className="syn-str">&quot;metadata&quot;</span>: <span className="syn-op">{'{'}</span>{'\n'}{'      '}<span className="syn-str">&quot;category&quot;</span>: <span className="syn-str">&quot;electronics&quot;</span>, <span className="syn-str">&quot;price&quot;</span>: <span className="syn-num">299.99</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'\n'}]){'\n'}{'\n'}<span className="syn-cmt"># Hybrid search: vector similarity + keyword matching + filters</span>{'\n'}<span className="syn-var">results</span> <span className="syn-op">=</span> <span className="syn-var">client</span>.<span className="syn-fn">query</span>(<span className="syn-str">&quot;products&quot;</span>,{'\n'}{'    '}<span className="syn-var">vector</span><span className="syn-op">=</span><span className="syn-fn">embed</span>(<span className="syn-str">&quot;wireless headphones&quot;</span>),{'\n'}{'    '}<span className="syn-var">query_text</span><span className="syn-op">=</span><span className="syn-str">&quot;noise cancelling&quot;</span>,{'    '}<span className="syn-cmt"># BM25 keyword boost</span>{'\n'}{'    '}<span className="syn-var">filter</span><span className="syn-op">=</span><span className="syn-op">{'{'}</span><span className="syn-str">&quot;price&quot;</span>: <span className="syn-op">{'{'}</span><span className="syn-str">&quot;$lte&quot;</span>: <span className="syn-num">500</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'  '}<span className="syn-cmt"># metadata filtering</span>{'\n'}{'    '}<span className="syn-var">top_k</span><span className="syn-op">=</span><span className="syn-num">10</span>)</code></pre>
             </div>
           </div>
         </div>
@@ -241,12 +246,12 @@ export default function LandingPage() {
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: Zap, title: 'Sub-100ms Latency', desc: 'Queries routed to the nearest miner. Distributed caching ensures consistent low-latency responses globally.', color: 'text-amber-400' },
-              { icon: Globe, title: 'Decentralized Network', desc: '2,000+ miners across the globe. No single point of failure. Your data is always available, always redundant.', color: 'text-blue-400' },
-              { icon: Shield, title: 'Secure by Default', desc: 'End-to-end encryption. Multi-replica storage. Hashed API keys. Your data never touches a centralized server.', color: 'text-green-400' },
-              { icon: TrendingUp, title: 'Scale to Billions', desc: 'From 1,000 to 1,000,000,000 vectors. The network grows with you — more miners, more capacity, same latency.', color: 'text-purple-400' },
-              { icon: DollarSign, title: '10x More Affordable', desc: '€20 free credit on signup. Pay-as-you-go pricing that\'s a fraction of centralized alternatives.', color: 'text-emerald-400' },
-              { icon: Lock, title: 'Enterprise Ready', desc: 'SOC 2 compliant. GDPR ready. SLA guarantees. Dedicated support for business-critical workloads.', color: 'text-rose-400' },
+              { icon: Shield, title: 'AES-256-GCM Encryption', desc: 'Per-field metadata encryption with per-namespace keys. Vectors are obfuscated before reaching miners — your data stays private even on a decentralized network.', color: 'text-green-400' },
+              { icon: Search, title: 'Hybrid Search', desc: 'Combine vector similarity with BM25 keyword matching via Reciprocal Rank Fusion. Get the best of semantic understanding and exact keyword relevance.', color: 'text-cyan-400' },
+              { icon: Filter, title: 'Metadata Filtering', desc: 'Pinecone-compatible filter operators ($eq, $gt, $in, $and, $or and more). Filter results by any metadata field with zero performance overhead.', color: 'text-amber-400' },
+              { icon: Globe, title: 'Decentralized Network', desc: '2,000+ miners across the globe. No single point of failure. Your data is replicated across 3 miners for redundancy.', color: 'text-blue-400' },
+              { icon: Zap, title: 'Sub-100ms Latency', desc: 'Queries routed to the nearest miner. Distributed caching ensures consistent low-latency responses globally.', color: 'text-purple-400' },
+              { icon: DollarSign, title: '10x More Affordable', desc: '€20 free credit on signup. Pay-as-you-go pricing that\'s a fraction of centralized alternatives like Pinecone.', color: 'text-emerald-400' },
             ].map((f, i) => (
               <div key={i} className="card-feature rounded-xl p-6">
                 <f.icon className={`h-10 w-10 ${f.color} mb-4`} />
@@ -275,9 +280,9 @@ export default function LandingPage() {
             <div className="hidden md:block absolute top-7 left-[calc(33.33%+0.5rem)] right-[calc(66.66%-0.5rem)] border-t-2 border-dashed border-white/10" />
             <div className="hidden md:block absolute top-7 left-[calc(66.66%+0.5rem)] right-[calc(33.33%-0.5rem)] border-t-2 border-dashed border-white/10" />
             {[
-              { step: '01', icon: Cpu, title: 'Create a Collection', desc: 'Define your vector dimension and distance metric. Your collection is automatically distributed across miners for redundancy.' },
-              { step: '02', icon: Network, title: 'Upsert Vectors', desc: 'Upload embeddings with metadata using our SDK or REST API. Data is replicated across multiple miners in real-time.' },
-              { step: '03', icon: BarChart3, title: 'Query at Scale', desc: 'Search for similar vectors with sub-100ms latency. Queries are routed to the optimal miner automatically.' },
+              { step: '01', icon: Cpu, title: 'Create a Collection', desc: 'Define your vector dimension, distance metric, and encrypted fields. Your collection is automatically distributed and encrypted across miners.' },
+              { step: '02', icon: Network, title: 'Upsert Vectors', desc: 'Upload embeddings with metadata. Sensitive fields are AES-256-GCM encrypted, vectors are obfuscated, and data is replicated across 3 miners.' },
+              { step: '03', icon: BarChart3, title: 'Search & Filter', desc: 'Hybrid search combines vector similarity with BM25 keywords. Filter by metadata with Pinecone-compatible operators. Sub-100ms latency.' },
             ].map((s, i) => (
               <div key={i} className="text-center">
                 <div className="inline-flex items-center justify-center h-14 w-14 rounded-full border border-white/10 bg-white/5 mb-5">
@@ -316,7 +321,7 @@ export default function LandingPage() {
                 <p className="text-sm text-zinc-500 mt-2">€20 free credit included</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {['€20 free credit on signup', 'Pay-as-you-go after credit', 'Unlimited collections', '60 requests/min', 'Community support'].map((item, i) => (
+                {['€20 free credit on signup', 'Hybrid search & filtering', 'AES-256-GCM encryption', '60 requests/min', 'Community support'].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
                     <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
                     {item}
@@ -345,7 +350,7 @@ export default function LandingPage() {
                 <p className="text-sm text-zinc-500 mt-2">For growing applications</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {['1M vectors included', '10M queries included', '600 requests/min', 'Priority support', '99.9% uptime SLA'].map((item, i) => (
+                {['1M vectors included', '10M queries included', 'Hybrid search & filtering', 'Priority support', '99.9% uptime SLA'].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
                     <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
                     {item}
@@ -371,7 +376,7 @@ export default function LandingPage() {
                 <p className="text-sm text-zinc-500 mt-2">For production workloads</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {['10M vectors included', '100M queries included', '6,000 requests/min', 'Dedicated support', '99.99% uptime SLA'].map((item, i) => (
+                {['10M vectors included', '100M queries included', 'Hybrid search & filtering', 'Dedicated support', '99.99% uptime SLA'].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
                     <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
                     {item}
