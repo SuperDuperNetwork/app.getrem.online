@@ -20,6 +20,8 @@ export default function CollectionsPage() {
   const [newName, setNewName] = useState('')
   const [newDimension, setNewDimension] = useState('384')
   const [newMetric, setNewMetric] = useState('cosine')
+  const [encryptedFields, setEncryptedFields] = useState('')
+  const [showAdvanced, setShowAdvanced] = useState(false)
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,16 +31,26 @@ export default function CollectionsPage() {
     setCreating(true)
     setError(null)
     try {
-      await createCollection({
+      const payload: any = {
         name: newName,
         dimension: parseInt(newDimension),
         metric: newMetric,
         replication_factor: 3,
-      })
+      }
+      const fields = encryptedFields
+        .split(',')
+        .map((f) => f.trim())
+        .filter(Boolean)
+      if (fields.length > 0) {
+        payload.encrypted_fields = fields
+      }
+      await createCollection(payload)
       setShowCreate(false)
       setNewName('')
       setNewDimension('384')
       setNewMetric('cosine')
+      setEncryptedFields('')
+      setShowAdvanced(false)
     } catch (err: any) {
       setError(err.message || 'Failed to create collection')
     } finally {
@@ -143,9 +155,33 @@ export default function CollectionsPage() {
                 </p>
               </div>
             </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {showAdvanced ? '- Hide' : '+ Show'} advanced options
+              </button>
+              {showAdvanced && (
+                <div className="mt-3 space-y-2">
+                  <label className="text-sm font-medium">Encrypted Metadata Fields</label>
+                  <input
+                    type="text"
+                    value={encryptedFields}
+                    onChange={(e) => setEncryptedFields(e.target.value)}
+                    placeholder="e.g. text, email, content"
+                    className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Comma-separated field names to encrypt with AES-256-GCM. Encrypted fields are hidden from miners but cannot be used for filtering. Leave empty to skip encryption.
+                  </p>
+                </div>
+              )}
+            </div>
             <div className="rounded-md border border-white/10 bg-white/5 p-3">
               <p className="text-xs text-muted-foreground">
-                Your collection will be replicated across 3 miners for redundancy. Data is encrypted in transit and at rest.
+                Your collection will be replicated across 3 miners for redundancy. Vectors are obfuscated and metadata fields you specify are encrypted with AES-256-GCM.
               </p>
             </div>
             <div className="flex gap-2">
