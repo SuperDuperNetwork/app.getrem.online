@@ -1,15 +1,16 @@
 'use client'
 
-import { createContext, useContext, ReactNode } from 'react'
+import { createContext, useContext, useCallback, ReactNode } from 'react'
 import { useAuth } from '@clerk/nextjs'
 import useSWR from 'swr'
 
 interface AuthContextType {
-  apiKey: string | null
+  token: string | null
   isLoading: boolean
   error: Error | null
   user: any | null
   namespace: any | null
+  apiKeys: any[]
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -43,12 +44,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   )
 
+  // Memoize getToken so hooks can call it for fresh tokens
+  const getCachedToken = useCallback(async () => {
+    return await getToken()
+  }, [getToken])
+
+  // Store getToken on window for api-client to access
+  if (typeof window !== 'undefined') {
+    ;(window as any).__clerkGetToken = getCachedToken
+  }
+
   const value: AuthContextType = {
-    apiKey: data?.api_keys?.[0]?.key || null,
+    token: isLoaded ? 'clerk-session' : null, // Marker that auth is ready
     isLoading: !isLoaded || isLoading,
     error: error || null,
-    user: data?.user || null,
-    namespace: data?.namespace || null,
+    user: data ? {
+      id: data.user_id,
+      email: data.email,
+      name: data.name,
+      is_verified: data.is_verified,
+      created_at: data.created_at,
+    } : null,
+    namespace: data?.namespaces?.[0] || null,
+    apiKeys: data?.api_keys || [],
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

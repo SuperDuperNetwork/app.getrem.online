@@ -9,11 +9,24 @@ class REMAPIClient {
       : `${process.env.BACKEND_URL || 'https://api.getrem.online'}/v1`
   }
 
+  private async getAuthHeaders(): Promise<Record<string, string>> {
+    if (typeof window !== 'undefined' && (window as any).__clerkGetToken) {
+      const token = await (window as any).__clerkGetToken()
+      if (token) {
+        return { 'Authorization': `Bearer ${token}` }
+      }
+    }
+    return {}
+  }
+
   private async request(endpoint: string, options: RequestInit = {}) {
+    const authHeaders = await this.getAuthHeaders()
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        ...authHeaders,
         ...options.headers,
       },
     })
@@ -32,78 +45,64 @@ class REMAPIClient {
   }
 
   // Collections
-  async getCollections(apiKey: string, cursor?: string, limit = 20) {
+  async getCollections(cursor?: string, limit = 20) {
     const params = new URLSearchParams()
     if (cursor) params.set('cursor', cursor)
     params.set('limit', limit.toString())
-    return this.request(`/collections?${params}`, {
-      headers: { 'X-API-Key': apiKey },
-    })
+    return this.request(`/collections?${params}`)
   }
 
-  async createCollection(apiKey: string, data: any) {
+  async createCollection(data: any) {
     return this.request('/collections', {
       method: 'POST',
-      headers: { 'X-API-Key': apiKey },
       body: JSON.stringify(data),
     })
   }
 
-  async deleteCollection(apiKey: string, id: string) {
+  async deleteCollection(id: string) {
     return this.request(`/collections/${id}`, {
       method: 'DELETE',
-      headers: { 'X-API-Key': apiKey },
     })
   }
 
   // API Keys
-  async getAPIKeys(apiKey: string) {
-    return this.request('/api-keys', {
-      headers: { 'X-API-Key': apiKey },
-    })
+  async getAPIKeys() {
+    return this.request('/api-keys')
   }
 
-  async createAPIKey(apiKey: string, data: any) {
+  async createAPIKey(data: any) {
     return this.request('/api-keys', {
       method: 'POST',
-      headers: { 'X-API-Key': apiKey },
       body: JSON.stringify(data),
     })
   }
 
-  async revokeAPIKey(apiKey: string, keyId: string) {
+  async revokeAPIKey(keyId: string) {
     return this.request(`/api-keys/${keyId}`, {
       method: 'DELETE',
-      headers: { 'X-API-Key': apiKey },
     })
   }
 
   // Usage
-  async getCreditBalance(apiKey: string) {
-    return this.request('/usage/credit-balance', {
-      headers: { 'X-API-Key': apiKey },
-    })
+  async getCreditBalance() {
+    return this.request('/usage/credit-balance')
   }
 
-  async getUsageSummary(apiKey: string) {
-    return this.request('/usage/summary', {
-      headers: { 'X-API-Key': apiKey },
-    })
+  async getUsageSummary() {
+    return this.request('/usage/summary')
   }
 
   // Billing
-  async createCheckoutSession(apiKey: string, tier: string) {
+  async createCheckoutSession(tier: string) {
     return this.request('/billing/checkout', {
       method: 'POST',
-      headers: { 'X-API-Key': apiKey },
       body: JSON.stringify({ tier }),
     })
   }
 
-  async createPortalSession(apiKey: string) {
+  async createPortalSession() {
     return this.request('/billing/portal', {
       method: 'POST',
-      headers: { 'X-API-Key': apiKey },
     })
   }
 }

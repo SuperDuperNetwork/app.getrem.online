@@ -1,10 +1,10 @@
 import useSWR from 'swr'
 import { apiClient } from '@/lib/api-client'
 
-export function useCollections(apiKey: string) {
+export function useCollections(isReady: boolean) {
   const { data, error, mutate, isLoading } = useSWR(
-    apiKey ? '/v1/collections' : null,
-    () => apiClient.getCollections(apiKey)
+    isReady ? '/v1/collections' : null,
+    () => apiClient.getCollections()
   )
 
   return {
@@ -16,8 +16,8 @@ export function useCollections(apiKey: string) {
   }
 }
 
-export function useCreateCollection(apiKey: string) {
-  const { mutate } = useCollections(apiKey)
+export function useCreateCollection(isReady: boolean) {
+  const { mutate } = useCollections(isReady)
 
   const createCollection = async (data: {
     name: string
@@ -26,7 +26,7 @@ export function useCreateCollection(apiKey: string) {
     replication_factor?: number
     description?: string
   }) => {
-    const result = await apiClient.createCollection(apiKey, data)
+    const result = await apiClient.createCollection(data)
     mutate()
     return result
   }
@@ -34,11 +34,11 @@ export function useCreateCollection(apiKey: string) {
   return { createCollection }
 }
 
-export function useDeleteCollection(apiKey: string) {
-  const { mutate } = useCollections(apiKey)
+export function useDeleteCollection(isReady: boolean) {
+  const { mutate } = useCollections(isReady)
 
   const deleteCollection = async (id: string) => {
-    await apiClient.deleteCollection(apiKey, id)
+    await apiClient.deleteCollection(id)
     mutate()
   }
 

@@ -7,9 +7,10 @@ import { useAuthBridge } from '@/lib/auth-context'
 import { useCreditBalance, useUsageSummary } from '@/lib/hooks/use-usage'
 
 export default function UsagePage() {
-  const { apiKey } = useAuthBridge()
-  const { creditBalance, isLoading: creditLoading } = useCreditBalance(apiKey || '')
-  const { usageSummary, isLoading: usageLoading } = useUsageSummary(apiKey || '')
+  const { token } = useAuthBridge()
+  const isReady = !!token
+  const { creditBalance, isLoading: creditLoading } = useCreditBalance(isReady)
+  const { usageSummary, isLoading: usageLoading } = useUsageSummary(isReady)
 
   const isLoading = creditLoading || usageLoading
 

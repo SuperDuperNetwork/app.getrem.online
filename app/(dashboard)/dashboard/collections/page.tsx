@@ -10,10 +10,11 @@ import { useAuthBridge } from '@/lib/auth-context'
 import { useCollections, useCreateCollection, useDeleteCollection } from '@/lib/hooks/use-collections'
 
 export default function CollectionsPage() {
-  const { apiKey } = useAuthBridge()
-  const { collections, isLoading, isError } = useCollections(apiKey || '')
-  const { createCollection } = useCreateCollection(apiKey || '')
-  const { deleteCollection } = useDeleteCollection(apiKey || '')
+  const { token } = useAuthBridge()
+  const isReady = !!token
+  const { collections, isLoading, isError } = useCollections(isReady)
+  const { createCollection } = useCreateCollection(isReady)
+  const { deleteCollection } = useDeleteCollection(isReady)
 
   const [showCreate, setShowCreate] = useState(false)
   const [newName, setNewName] = useState('')
@@ -23,7 +24,7 @@ export default function CollectionsPage() {
   const [error, setError] = useState<string | null>(null)
 
   const handleCreate = async () => {
-    if (!newName || !apiKey) return
+    if (!newName || !isReady) return
 
     setCreating(true)
     setError(null)

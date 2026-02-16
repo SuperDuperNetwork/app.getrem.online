@@ -12,8 +12,8 @@ import { useCollections } from '@/lib/hooks/use-collections'
 export default function CollectionDetailPage() {
   const params = useParams()
   const collectionId = params.id as string
-  const { apiKey } = useAuthBridge()
-  const { collections, isLoading } = useCollections(apiKey || '')
+  const { token } = useAuthBridge()
+  const { collections, isLoading } = useCollections(!!token)
 
   const collection = collections.find((c: any) => c.id === collectionId)
 

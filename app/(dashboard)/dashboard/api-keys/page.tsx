@@ -8,10 +8,11 @@ import { useAuthBridge } from '@/lib/auth-context'
 import { useAPIKeys, useCreateAPIKey, useRevokeAPIKey } from '@/lib/hooks/use-api-keys'
 
 export default function APIKeysPage() {
-  const { apiKey, namespace } = useAuthBridge()
-  const { apiKeys, isLoading, isError } = useAPIKeys(apiKey || '')
-  const { createAPIKey } = useCreateAPIKey(apiKey || '')
-  const { revokeAPIKey } = useRevokeAPIKey(apiKey || '')
+  const { token, namespace } = useAuthBridge()
+  const isReady = !!token
+  const { apiKeys, isLoading, isError } = useAPIKeys(isReady)
+  const { createAPIKey } = useCreateAPIKey(isReady)
+  const { revokeAPIKey } = useRevokeAPIKey(isReady)
 
   const [showCreate, setShowCreate] = useState(false)
   const [newKeyName, setNewKeyName] = useState('')
@@ -21,7 +22,7 @@ export default function APIKeysPage() {
   const [error, setError] = useState<string | null>(null)
 
   const handleCreate = async () => {
-    if (!newKeyName || !apiKey || !namespace) return
+    if (!newKeyName || !isReady || !namespace) return
 
     setCreating(true)
     setError(null)

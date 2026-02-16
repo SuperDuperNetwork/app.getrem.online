@@ -10,10 +10,11 @@ import { useCollections } from '@/lib/hooks/use-collections'
 import { useCreditBalance, useUsageSummary } from '@/lib/hooks/use-usage'
 
 export default function DashboardPage() {
-  const { apiKey, isLoading: authLoading, user } = useAuthBridge()
-  const { collections, isLoading: collectionsLoading } = useCollections(apiKey || '')
-  const { creditBalance, isLoading: creditLoading } = useCreditBalance(apiKey || '')
-  const { usageSummary, isLoading: usageLoading } = useUsageSummary(apiKey || '')
+  const { token, isLoading: authLoading, user } = useAuthBridge()
+  const isReady = !!token
+  const { collections, isLoading: collectionsLoading } = useCollections(isReady)
+  const { creditBalance, isLoading: creditLoading } = useCreditBalance(isReady)
+  const { usageSummary, isLoading: usageLoading } = useUsageSummary(isReady)
 
   const isLoading = authLoading || collectionsLoading || creditLoading || usageLoading
 

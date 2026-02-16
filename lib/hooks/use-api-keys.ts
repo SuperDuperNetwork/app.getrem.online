@@ -1,10 +1,10 @@
 import useSWR from 'swr'
 import { apiClient } from '@/lib/api-client'
 
-export function useAPIKeys(apiKey: string) {
+export function useAPIKeys(isReady: boolean) {
   const { data, error, mutate, isLoading } = useSWR(
-    apiKey ? '/v1/api-keys' : null,
-    () => apiClient.getAPIKeys(apiKey)
+    isReady ? '/v1/api-keys' : null,
+    () => apiClient.getAPIKeys()
   )
 
   return {
@@ -15,8 +15,8 @@ export function useAPIKeys(apiKey: string) {
   }
 }
 
-export function useCreateAPIKey(apiKey: string) {
-  const { mutate } = useAPIKeys(apiKey)
+export function useCreateAPIKey(isReady: boolean) {
+  const { mutate } = useAPIKeys(isReady)
 
   const createAPIKey = async (data: {
     namespace_id: string
@@ -24,7 +24,7 @@ export function useCreateAPIKey(apiKey: string) {
     is_read_only?: boolean
     rate_limit_rpm?: number
   }) => {
-    const result = await apiClient.createAPIKey(apiKey, data)
+    const result = await apiClient.createAPIKey(data)
     mutate()
     return result
   }
@@ -32,11 +32,11 @@ export function useCreateAPIKey(apiKey: string) {
   return { createAPIKey }
 }
 
-export function useRevokeAPIKey(apiKey: string) {
-  const { mutate } = useAPIKeys(apiKey)
+export function useRevokeAPIKey(isReady: boolean) {
+  const { mutate } = useAPIKeys(isReady)
 
   const revokeAPIKey = async (keyId: string) => {
-    await apiClient.revokeAPIKey(apiKey, keyId)
+    await apiClient.revokeAPIKey(keyId)
     mutate()
   }
 
