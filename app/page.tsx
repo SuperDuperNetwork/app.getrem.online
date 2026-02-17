@@ -636,10 +636,10 @@ results = collection.query(
             <div>
               <h4 className="text-sm font-semibold mb-4">Community</h4>
               <ul className="space-y-2.5 text-sm text-zinc-500">
-                <li><Link href="https://discord.gg/rem" target="_blank" className="hover:text-white transition-colors">Discord</Link></li>
-                <li><Link href="https://twitter.com/rem_network" target="_blank" className="hover:text-white transition-colors">Twitter</Link></li>
-                <li><Link href="https://t.me/rem_network" target="_blank" className="hover:text-white transition-colors">Telegram</Link></li>
-                <li><Link href="https://getrem.online" target="_blank" className="hover:text-white transition-colors">Network Explorer</Link></li>
+                <li><Link href="https://discord.gg/9ndMQY4PYP" target="_blank" className="hover:text-white transition-colors">Discord</Link></li>
+                <li><Link href="https://x.com/RemNetwork" target="_blank" className="hover:text-white transition-colors">Twitter</Link></li>
+                <li><Link href="https://t.me/RemDepin" target="_blank" className="hover:text-white transition-colors">Telegram</Link></li>
+                <li><Link href="https://getrem.online/explorer.html" target="_blank" className="hover:text-white transition-colors">Network Explorer</Link></li>
               </ul>
             </div>
           </div>
