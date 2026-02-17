@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Zap, Globe, Shield, TrendingUp, DollarSign, Lock, Database, CheckCircle2, ChevronRight, Cpu, Network, BarChart3, Menu, X, Copy, Check, Search, Filter } from 'lucide-react'
+import { ArrowRight, Zap, Globe, Shield, TrendingUp, DollarSign, Lock, Database, CheckCircle2, ChevronRight, Cpu, Network, BarChart3, Menu, X, Copy, Check, Search, Filter, BookOpen, Layers, Bot, ShoppingCart, Brain, Link2, Code } from 'lucide-react'
 
 const ROTATING_WORDS = ['semantic search', 'RAG pipelines', 'AI agents', 'recommendations']
 const WORD_INTERVAL = 2500
@@ -65,22 +65,22 @@ function HeroCopyButton({ text }: { text: string }) {
   )
 }
 
-const HERO_CODE = `from rem_sdk import REMClient
+const HERO_CODE = `from rem import REM
 
-client = REMClient(api_key="rem_xxx")
+client = REM(api_key="rem_xxx")
 
 # Create collection with AES-256-GCM encrypted fields
-client.create_collection("products", dimension=384,
+collection = client.create_collection("products", dimension=384,
     encrypted_fields=["email", "pii_data"])
 
 # Upsert vectors with metadata (encrypted fields auto-handled)
-client.upsert("products", vectors=[
+collection.upsert([
   {"id": "p1", "values": embed("..."), "metadata": {
       "category": "electronics", "price": 299.99}},
 ])
 
 # Hybrid search: vector similarity + keyword matching + filters
-results = client.query("products",
+results = collection.query(
     vector=embed("wireless headphones"),
     query_text="noise cancelling",    # BM25 keyword boost
     filter={"price": {"$lte": 500}},  # metadata filtering
@@ -109,7 +109,8 @@ export default function LandingPage() {
 
           <div className="hidden md:flex items-center gap-8">
             <Link href="#features" className="text-sm text-zinc-400 hover:text-white transition-colors">Features</Link>
-            <Link href="#how-it-works" className="text-sm text-zinc-400 hover:text-white transition-colors">How It Works</Link>
+            <Link href="#use-cases" className="text-sm text-zinc-400 hover:text-white transition-colors">Use Cases</Link>
+            <Link href="#integrations" className="text-sm text-zinc-400 hover:text-white transition-colors">Integrations</Link>
             <Link href="#pricing" className="text-sm text-zinc-400 hover:text-white transition-colors">Pricing</Link>
             <Link href="/docs" className="text-sm text-zinc-400 hover:text-white transition-colors">Docs</Link>
           </div>
@@ -138,7 +139,8 @@ export default function LandingPage() {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-white/5 px-6 py-4 space-y-3">
             <Link href="#features" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Features</Link>
-            <Link href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">How It Works</Link>
+            <Link href="#use-cases" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Use Cases</Link>
+            <Link href="#integrations" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Integrations</Link>
             <Link href="#pricing" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Pricing</Link>
             <Link href="/docs" onClick={() => setMobileMenuOpen(false)} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1.5">Docs</Link>
             <div className="pt-2 border-t border-white/5 flex flex-col gap-2">
@@ -171,7 +173,7 @@ export default function LandingPage() {
             Powered by a global network of miners — not a single cloud provider.
           </p>
 
-          <div className="animate-fade-up delay-300 flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+          <div className="animate-fade-up delay-300 flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
             <Link
               href="/sign-up"
               className="inline-flex items-center gap-2 rounded-lg bg-white text-black font-medium px-7 py-3.5 text-base hover:bg-zinc-200 transition-colors"
@@ -186,8 +188,16 @@ export default function LandingPage() {
             </Link>
           </div>
 
+          {/* Install badge */}
+          <div className="animate-fade-up delay-400 mb-16">
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm">
+              <code className="text-zinc-300 font-mono">pip install rem-vectordb</code>
+              <HeroCopyButton text="pip install rem-vectordb" />
+            </div>
+          </div>
+
           {/* Stats row */}
-          <div className="animate-fade-up delay-400 mx-auto max-w-3xl">
+          <div className="animate-fade-up delay-500 mx-auto max-w-3xl">
             <p className="text-xs uppercase tracking-widest text-zinc-500 mb-6">Trusted in production</p>
             <div className="grid grid-cols-2 gap-6 md:flex md:items-center md:justify-center md:gap-0">
               <div className="text-center md:flex-1 md:px-6">
@@ -226,7 +236,7 @@ export default function LandingPage() {
                 <span className="ml-3 text-xs text-zinc-500">quickstart.py</span>
               </div>
               <HeroCopyButton text={HERO_CODE} />
-              <pre className="p-6 text-[13px] leading-relaxed overflow-x-auto"><code><span className="syn-kw">from</span> <span className="syn-var">rem_sdk</span> <span className="syn-kw">import</span> <span className="syn-cls">REMClient</span>{'\n'}{'\n'}<span className="syn-var">client</span> <span className="syn-op">=</span> <span className="syn-cls">REMClient</span>(<span className="syn-var">api_key</span><span className="syn-op">=</span><span className="syn-str">&quot;rem_xxx&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Create collection with AES-256-GCM encrypted fields</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">create_collection</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">dimension</span><span className="syn-op">=</span><span className="syn-num">384</span>,{'\n'}{'    '}<span className="syn-var">encrypted_fields</span><span className="syn-op">=</span>[<span className="syn-str">&quot;email&quot;</span>, <span className="syn-str">&quot;pii_data&quot;</span>]){'\n'}{'\n'}<span className="syn-cmt"># Upsert vectors with metadata (encrypted fields auto-handled)</span>{'\n'}<span className="syn-var">client</span>.<span className="syn-fn">upsert</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">vectors</span><span className="syn-op">=</span>[{'\n'}{'  '}<span className="syn-op">{'{'}</span><span className="syn-str">&quot;id&quot;</span>: <span className="syn-str">&quot;p1&quot;</span>, <span className="syn-str">&quot;values&quot;</span>: <span className="syn-fn">embed</span>(<span className="syn-str">&quot;...&quot;</span>), <span className="syn-str">&quot;metadata&quot;</span>: <span className="syn-op">{'{'}</span>{'\n'}{'      '}<span className="syn-str">&quot;category&quot;</span>: <span className="syn-str">&quot;electronics&quot;</span>, <span className="syn-str">&quot;price&quot;</span>: <span className="syn-num">299.99</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'\n'}]){'\n'}{'\n'}<span className="syn-cmt"># Hybrid search: vector similarity + keyword matching + filters</span>{'\n'}<span className="syn-var">results</span> <span className="syn-op">=</span> <span className="syn-var">client</span>.<span className="syn-fn">query</span>(<span className="syn-str">&quot;products&quot;</span>,{'\n'}{'    '}<span className="syn-var">vector</span><span className="syn-op">=</span><span className="syn-fn">embed</span>(<span className="syn-str">&quot;wireless headphones&quot;</span>),{'\n'}{'    '}<span className="syn-var">query_text</span><span className="syn-op">=</span><span className="syn-str">&quot;noise cancelling&quot;</span>,{'    '}<span className="syn-cmt"># BM25 keyword boost</span>{'\n'}{'    '}<span className="syn-var">filter</span><span className="syn-op">=</span><span className="syn-op">{'{'}</span><span className="syn-str">&quot;price&quot;</span>: <span className="syn-op">{'{'}</span><span className="syn-str">&quot;$lte&quot;</span>: <span className="syn-num">500</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'  '}<span className="syn-cmt"># metadata filtering</span>{'\n'}{'    '}<span className="syn-var">top_k</span><span className="syn-op">=</span><span className="syn-num">10</span>)</code></pre>
+              <pre className="p-6 text-[13px] leading-relaxed overflow-x-auto"><code><span className="syn-kw">from</span> <span className="syn-var">rem</span> <span className="syn-kw">import</span> <span className="syn-cls">REM</span>{'\n'}{'\n'}<span className="syn-var">client</span> <span className="syn-op">=</span> <span className="syn-cls">REM</span>(<span className="syn-var">api_key</span><span className="syn-op">=</span><span className="syn-str">&quot;rem_xxx&quot;</span>){'\n'}{'\n'}<span className="syn-cmt"># Create collection with AES-256-GCM encrypted fields</span>{'\n'}<span className="syn-var">collection</span> <span className="syn-op">=</span> <span className="syn-var">client</span>.<span className="syn-fn">create_collection</span>(<span className="syn-str">&quot;products&quot;</span>, <span className="syn-var">dimension</span><span className="syn-op">=</span><span className="syn-num">384</span>,{'\n'}{'    '}<span className="syn-var">encrypted_fields</span><span className="syn-op">=</span>[<span className="syn-str">&quot;email&quot;</span>, <span className="syn-str">&quot;pii_data&quot;</span>]){'\n'}{'\n'}<span className="syn-cmt"># Upsert vectors with metadata (encrypted fields auto-handled)</span>{'\n'}<span className="syn-var">collection</span>.<span className="syn-fn">upsert</span>([{'\n'}{'  '}<span className="syn-op">{'{'}</span><span className="syn-str">&quot;id&quot;</span>: <span className="syn-str">&quot;p1&quot;</span>, <span className="syn-str">&quot;values&quot;</span>: <span className="syn-fn">embed</span>(<span className="syn-str">&quot;...&quot;</span>), <span className="syn-str">&quot;metadata&quot;</span>: <span className="syn-op">{'{'}</span>{'\n'}{'      '}<span className="syn-str">&quot;category&quot;</span>: <span className="syn-str">&quot;electronics&quot;</span>, <span className="syn-str">&quot;price&quot;</span>: <span className="syn-num">299.99</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'\n'}]){'\n'}{'\n'}<span className="syn-cmt"># Hybrid search: vector similarity + keyword matching + filters</span>{'\n'}<span className="syn-var">results</span> <span className="syn-op">=</span> <span className="syn-var">collection</span>.<span className="syn-fn">query</span>({'\n'}{'    '}<span className="syn-var">vector</span><span className="syn-op">=</span><span className="syn-fn">embed</span>(<span className="syn-str">&quot;wireless headphones&quot;</span>),{'\n'}{'    '}<span className="syn-var">query_text</span><span className="syn-op">=</span><span className="syn-str">&quot;noise cancelling&quot;</span>,{'    '}<span className="syn-cmt"># BM25 keyword boost</span>{'\n'}{'    '}<span className="syn-var">filter</span><span className="syn-op">=</span><span className="syn-op">{'{'}</span><span className="syn-str">&quot;price&quot;</span>: <span className="syn-op">{'{'}</span><span className="syn-str">&quot;$lte&quot;</span>: <span className="syn-num">500</span><span className="syn-op">{'}'}</span><span className="syn-op">{'}'}</span>,{'  '}<span className="syn-cmt"># metadata filtering</span>{'\n'}{'    '}<span className="syn-var">top_k</span><span className="syn-op">=</span><span className="syn-num">10</span>)</code></pre>
             </div>
           </div>
         </div>
@@ -251,7 +261,10 @@ export default function LandingPage() {
               { icon: Filter, title: 'Metadata Filtering', desc: 'Pinecone-compatible filter operators ($eq, $gt, $in, $and, $or and more). Filter results by any metadata field with zero performance overhead.', color: 'text-amber-400' },
               { icon: Globe, title: 'Decentralized Network', desc: '2,000+ miners across the globe. No single point of failure. Your data is replicated across 3 miners for redundancy.', color: 'text-blue-400' },
               { icon: Zap, title: 'Sub-100ms Latency', desc: 'Queries routed to the nearest miner. Distributed caching ensures consistent low-latency responses globally.', color: 'text-purple-400' },
-              { icon: DollarSign, title: '10x More Affordable', desc: '€20 free credit on signup. Pay-as-you-go pricing that\'s a fraction of centralized alternatives like Pinecone.', color: 'text-emerald-400' },
+              { icon: Layers, title: 'Batch Operations', desc: 'Execute up to 10 queries in a single API call. Perfect for recommendation engines, AI agents, and parallel retrieval pipelines.', color: 'text-pink-400' },
+              { icon: Code, title: 'Framework Integrations', desc: 'Native LangChain and LlamaIndex integrations. Drop-in vector store that works with your existing RAG pipeline in minutes.', color: 'text-orange-400' },
+              { icon: Database, title: 'Full CRUD Operations', desc: 'Complete vector lifecycle — upsert, query, fetch by ID, and delete. Built for production RAG with source document retrieval and GDPR compliance.', color: 'text-teal-400' },
+              { icon: DollarSign, title: '10x More Affordable', desc: 'Free tier with generous credit. Pay-as-you-go pricing that\'s a fraction of centralized alternatives like Pinecone.', color: 'text-emerald-400' },
             ].map((f, i) => (
               <div key={i} className="card-feature rounded-xl p-6">
                 <f.icon className={`h-10 w-10 ${f.color} mb-4`} />
@@ -259,6 +272,171 @@ export default function LandingPage() {
                 <p className="text-sm text-zinc-400 leading-relaxed">{f.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Use Cases */}
+      <Section id="use-cases" className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              Built for every <span className="text-gradient-green">AI use case</span>
+            </h2>
+            <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+              From RAG pipelines to recommendation engines — REM powers production AI at any scale.
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
+            {/* RAG Pipelines */}
+            <div className="card-feature rounded-xl p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-blue-400" />
+                </div>
+                <h3 className="text-xl font-semibold">RAG Pipelines</h3>
+              </div>
+              <p className="text-sm text-zinc-400 leading-relaxed mb-4">
+                Build retrieval-augmented generation with native LangChain and LlamaIndex support. Store document chunks with metadata, retrieve relevant context with hybrid search, and fetch source documents by ID for citations.
+              </p>
+              <div className="rounded-lg border border-white/10 bg-[#0d1117] p-4 overflow-x-auto">
+                <pre className="text-[12px] leading-relaxed text-zinc-300"><code>{`from rem.integrations.langchain import REMVectorStore
+from langchain_openai import OpenAIEmbeddings
+
+store = REMVectorStore(
+    api_key="rem_xxx",
+    collection_name="docs",
+    embedding=OpenAIEmbeddings()
+)
+store.add_texts(["Your documents here..."])
+results = store.similarity_search("query", k=5)`}</code></pre>
+              </div>
+            </div>
+
+            {/* Semantic Search */}
+            <div className="card-feature rounded-xl p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                  <Search className="h-5 w-5 text-cyan-400" />
+                </div>
+                <h3 className="text-xl font-semibold">Semantic Search</h3>
+              </div>
+              <p className="text-sm text-zinc-400 leading-relaxed mb-4">
+                Go beyond keywords. Hybrid search combines vector similarity with BM25 keyword matching via Reciprocal Rank Fusion. Filter by any metadata field with Pinecone-compatible operators.
+              </p>
+              <div className="rounded-lg border border-white/10 bg-[#0d1117] p-4 overflow-x-auto">
+                <pre className="text-[12px] leading-relaxed text-zinc-300"><code>{`results = collection.query(
+    vector=embed("wireless headphones"),
+    query_text="noise cancelling",  # BM25 boost
+    hybrid_alpha=0.5,               # 50/50 blend
+    filter={"price": {"$lte": 500}},
+    top_k=10
+)`}</code></pre>
+              </div>
+            </div>
+
+            {/* AI Agents */}
+            <div className="card-feature rounded-xl p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <Bot className="h-5 w-5 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-semibold">AI Agents</h3>
+              </div>
+              <p className="text-sm text-zinc-400 leading-relaxed mb-4">
+                Give your AI agents long-term memory. Store conversation embeddings, tool outputs, and knowledge. Batch queries let agents search multiple memory banks in a single API call.
+              </p>
+              <div className="rounded-lg border border-white/10 bg-[#0d1117] p-4 overflow-x-auto">
+                <pre className="text-[12px] leading-relaxed text-zinc-300"><code>{`# Batch query across multiple memory types
+results = collection.query_batch([
+    {"vector": embed("user question"), "top_k": 5,
+     "filter": {"type": "conversation"}},
+    {"vector": embed("user question"), "top_k": 3,
+     "filter": {"type": "tool_output"}},
+    {"vector": embed("user question"), "top_k": 3,
+     "filter": {"type": "knowledge"}},
+])`}</code></pre>
+              </div>
+            </div>
+
+            {/* Recommendations */}
+            <div className="card-feature rounded-xl p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                  <ShoppingCart className="h-5 w-5 text-orange-400" />
+                </div>
+                <h3 className="text-xl font-semibold">Recommendations</h3>
+              </div>
+              <p className="text-sm text-zinc-400 leading-relaxed mb-4">
+                Power product and content recommendations with vector similarity. Use metadata filters for personalization, batch queries for multiple recommendation feeds, and real-time upserts as users interact.
+              </p>
+              <div className="rounded-lg border border-white/10 bg-[#0d1117] p-4 overflow-x-auto">
+                <pre className="text-[12px] leading-relaxed text-zinc-300"><code>{`# Find similar products, filtered by category
+results = collection.query(
+    vector=user_preference_embedding,
+    top_k=20,
+    filter={
+        "category": {"$in": ["electronics", "gadgets"]},
+        "in_stock": True,
+        "price": {"$lte": 500}
+    }
+)`}</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Integrations */}
+      <Section id="integrations" className="relative z-10 py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              Integrates with your <span className="text-gradient-blue">stack</span>
+            </h2>
+            <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+              Native integrations with the frameworks you already use. Drop-in and go.
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-3 max-w-5xl mx-auto">
+            {/* Python SDK */}
+            <div className="card-feature rounded-xl p-6 text-center">
+              <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl bg-blue-500/10 mb-4">
+                <Code className="h-7 w-7 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Python SDK</h3>
+              <p className="text-sm text-zinc-400 mb-3">Sync and async clients with full type hints</p>
+              <code className="text-xs text-zinc-500 bg-white/5 px-3 py-1 rounded-full">pip install rem-vectordb</code>
+            </div>
+
+            {/* LangChain */}
+            <div className="card-feature rounded-xl p-6 text-center">
+              <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl bg-green-500/10 mb-4">
+                <Link2 className="h-7 w-7 text-green-400" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">LangChain</h3>
+              <p className="text-sm text-zinc-400 mb-3">Drop-in VectorStore for RAG chains</p>
+              <code className="text-xs text-zinc-500 bg-white/5 px-3 py-1 rounded-full">pip install rem-vectordb[langchain]</code>
+            </div>
+
+            {/* LlamaIndex */}
+            <div className="card-feature rounded-xl p-6 text-center">
+              <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl bg-purple-500/10 mb-4">
+                <Brain className="h-7 w-7 text-purple-400" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">LlamaIndex</h3>
+              <p className="text-sm text-zinc-400 mb-3">Native VectorStore for index pipelines</p>
+              <code className="text-xs text-zinc-500 bg-white/5 px-3 py-1 rounded-full">pip install rem-vectordb[llamaindex]</code>
+            </div>
+          </div>
+
+          {/* REST API note */}
+          <div className="mt-12 text-center">
+            <p className="text-sm text-zinc-500">
+              Prefer REST? Use any language with our <Link href="/docs#rest-api" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">REST API</Link> — just add <code className="text-xs text-zinc-400 bg-white/5 px-1.5 py-0.5 rounded">X-API-Key</code> header.
+            </p>
           </div>
         </div>
       </Section>
@@ -282,7 +460,7 @@ export default function LandingPage() {
             {[
               { step: '01', icon: Cpu, title: 'Create a Collection', desc: 'Define your vector dimension, distance metric, and encrypted fields. Your collection is automatically distributed and encrypted across miners.' },
               { step: '02', icon: Network, title: 'Upsert Vectors', desc: 'Upload embeddings with metadata. Sensitive fields are AES-256-GCM encrypted, vectors are obfuscated, and data is replicated across 3 miners.' },
-              { step: '03', icon: BarChart3, title: 'Search & Filter', desc: 'Hybrid search combines vector similarity with BM25 keywords. Filter by metadata with Pinecone-compatible operators. Sub-100ms latency.' },
+              { step: '03', icon: BarChart3, title: 'Search & Retrieve', desc: 'Hybrid search combines vector similarity with BM25 keywords. Filter by metadata. Fetch source docs by ID. Batch queries for parallel retrieval.' },
             ].map((s, i) => (
               <div key={i} className="text-center">
                 <div className="inline-flex items-center justify-center h-14 w-14 rounded-full border border-white/10 bg-white/5 mb-5">
@@ -315,13 +493,13 @@ export default function LandingPage() {
               <div className="mb-8">
                 <h3 className="text-lg font-semibold mb-1">Free</h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">€0</span>
+                  <span className="text-4xl font-bold">$0</span>
                   <span className="text-zinc-500 text-sm">/month</span>
                 </div>
-                <p className="text-sm text-zinc-500 mt-2">€20 free credit included</p>
+                <p className="text-sm text-zinc-500 mt-2">$20 free credit included</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {['€20 free credit on signup', 'Hybrid search & filtering', 'AES-256-GCM encryption', '60 requests/min', 'Community support'].map((item, i) => (
+                {['$20 free credit on signup', 'Hybrid search & filtering', 'AES-256-GCM encryption', 'LangChain & LlamaIndex', '60 requests/min', 'Community support'].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
                     <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
                     {item}
@@ -344,13 +522,13 @@ export default function LandingPage() {
               <div className="mb-8">
                 <h3 className="text-lg font-semibold mb-1">Pro</h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">€29.99</span>
+                  <span className="text-4xl font-bold">$29.99</span>
                   <span className="text-zinc-500 text-sm">/month</span>
                 </div>
                 <p className="text-sm text-zinc-500 mt-2">For growing applications</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {['1M vectors included', '10M queries included', 'Hybrid search & filtering', 'Priority support', '99.9% uptime SLA'].map((item, i) => (
+                {['1M vectors included', '10M queries included', 'Hybrid search & filtering', 'Batch queries (10 per call)', 'Priority support', '99.9% uptime SLA'].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
                     <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
                     {item}
@@ -370,13 +548,13 @@ export default function LandingPage() {
               <div className="mb-8">
                 <h3 className="text-lg font-semibold mb-1">Business</h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">€99.99</span>
+                  <span className="text-4xl font-bold">$99.99</span>
                   <span className="text-zinc-500 text-sm">/month</span>
                 </div>
                 <p className="text-sm text-zinc-500 mt-2">For production workloads</p>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {['10M vectors included', '100M queries included', 'Hybrid search & filtering', 'Dedicated support', '99.99% uptime SLA'].map((item, i) => (
+                {['10M vectors included', '100M queries included', 'Hybrid search & filtering', 'Batch queries (10 per call)', 'Dedicated support', '99.99% uptime SLA'].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-300">
                     <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
                     {item}
@@ -402,7 +580,7 @@ export default function LandingPage() {
               Start building with REM
             </h2>
             <p className="text-lg text-zinc-400 mb-10 max-w-xl mx-auto">
-              €20 free credit. No credit card required. Deploy your first vector collection in under 60 seconds.
+              Free credit included. No credit card required. Deploy your first vector collection in under 60 seconds.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
@@ -441,16 +619,18 @@ export default function LandingPage() {
               <h4 className="text-sm font-semibold mb-4">Product</h4>
               <ul className="space-y-2.5 text-sm text-zinc-500">
                 <li><Link href="#features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="#use-cases" className="hover:text-white transition-colors">Use Cases</Link></li>
                 <li><Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
                 <li><Link href="/docs" className="hover:text-white transition-colors">Documentation</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold mb-4">Company</h4>
+              <h4 className="text-sm font-semibold mb-4">Developers</h4>
               <ul className="space-y-2.5 text-sm text-zinc-500">
-                <li><Link href="https://getrem.online" target="_blank" className="hover:text-white transition-colors">About</Link></li>
-                <li><Link href="https://getrem.online/explorer" target="_blank" className="hover:text-white transition-colors">Network Explorer</Link></li>
-                <li><Link href="https://github.com/rem-network" target="_blank" className="hover:text-white transition-colors">GitHub</Link></li>
+                <li><Link href="/docs#quickstart" className="hover:text-white transition-colors">Quickstart</Link></li>
+                <li><Link href="/docs#sdk" className="hover:text-white transition-colors">Python SDK</Link></li>
+                <li><Link href="/docs#integrations" className="hover:text-white transition-colors">Integrations</Link></li>
+                <li><Link href="/docs#rest-api" className="hover:text-white transition-colors">REST API</Link></li>
               </ul>
             </div>
             <div>
@@ -459,11 +639,12 @@ export default function LandingPage() {
                 <li><Link href="https://discord.gg/rem" target="_blank" className="hover:text-white transition-colors">Discord</Link></li>
                 <li><Link href="https://twitter.com/rem_network" target="_blank" className="hover:text-white transition-colors">Twitter</Link></li>
                 <li><Link href="https://t.me/rem_network" target="_blank" className="hover:text-white transition-colors">Telegram</Link></li>
+                <li><Link href="https://getrem.online" target="_blank" className="hover:text-white transition-colors">Network Explorer</Link></li>
               </ul>
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-zinc-600">© 2026 REM Network. All rights reserved.</p>
+            <p className="text-sm text-zinc-600">&copy; 2026 REM Network. All rights reserved.</p>
             <div className="flex gap-6 text-sm text-zinc-600">
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>

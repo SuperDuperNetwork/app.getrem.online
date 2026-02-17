@@ -114,26 +114,54 @@ export default function CollectionDetailPage() {
           <div>
             <h4 className="mb-2 text-sm font-medium">Python SDK</h4>
             <pre className="rounded-md bg-muted p-4 text-sm overflow-x-auto">
-              <code>{`from rem_sdk import REMClient
+              <code>{`from rem import REM
 
-client = REMClient(api_key="rem_xxx")
+client = REM(api_key="rem_xxx")
+collection = client.get_collection("${collectionId}")
 
 # Upsert vectors
-client.upsert("${collectionId}", vectors=[
+collection.upsert([
     {"id": "vec1", "values": [0.1] * ${collection?.dimension || 384}, "metadata": {"text": "hello"}},
 ])
 
-# Query
-results = client.query("${collectionId}", vector=[0.1] * ${collection?.dimension || 384}, top_k=10)`}</code>
+# Query (vector similarity)
+results = collection.query(vector=[0.1] * ${collection?.dimension || 384}, top_k=10)
+
+# Hybrid search (vector + keyword)
+results = collection.query(
+    vector=[0.1] * ${collection?.dimension || 384},
+    query_text="hello",
+    hybrid_alpha=0.5,
+    top_k=10
+)
+
+# Fetch vectors by ID
+fetched = collection.fetch(ids=["vec1"])
+
+# Delete vectors
+collection.delete(ids=["vec1"])`}</code>
             </pre>
           </div>
           <div>
             <h4 className="mb-2 text-sm font-medium">cURL</h4>
             <pre className="rounded-md bg-muted p-4 text-sm overflow-x-auto">
-              <code>{`curl -X POST https://getrem.online/v1/collections/${collectionId}/vectors/query \\
+              <code>{`# Query vectors
+curl -X POST https://api.getrem.online/v1/collections/${collectionId}/vectors/query \\
   -H "X-API-Key: rem_xxx" \\
   -H "Content-Type: application/json" \\
-  -d '{"vector": [0.1, ...], "top_k": 10}'`}</code>
+  -d '{"vector": [0.1, ...], "top_k": 10}'
+
+# Fetch vectors by ID
+curl -X POST https://api.getrem.online/v1/collections/${collectionId}/vectors/fetch \\
+  -H "X-API-Key: rem_xxx" \\
+  -H "Content-Type: application/json" \\
+  -d '{"ids": ["vec1"]}'
+
+# Delete vectors
+curl -X POST https://api.getrem.online/v1/collections/${collectionId}/vectors/delete \\
+  -H "X-API-Key: rem_xxx" \\
+  -H "Content-Type: application/json" \\
+  -d '{"ids": ["vec1"]}'`}</code>
             </pre>
           </div>
         </CardContent>
